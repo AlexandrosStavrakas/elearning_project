@@ -1,2 +1,1 @@
-# elearning_project
-Elearning project was an academic project which implemented an elearning platform such as e-class and coursera
+Elearning project was an academic project which implemented an elearning platform such as e-class and coursera. This project was the main of the course Software Engineering of the Msc Information Systems in Athens University of Economics and Business. The implemantation based on Java programming language and the usage of Hibernate framework.
