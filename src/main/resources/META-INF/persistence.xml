@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+<persistence version="1.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
+-->
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/ xml/ns/persistence/persistence_2_0.xsd">
+  <persistence-unit name="elearning" transaction-type="RESOURCE_LOCAL">
+    <!--  
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    -->
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+    <class>omada5.ElearningProject.domain.Teacher</class>
+    <class>omada5.ElearningProject.domain.Student</class>
+    <class>omada5.ElearningProject.domain.Material</class>
+    <class>omada5.ElearningProject.domain.Uni_Admin</class>
+    <class>omada5.ElearningProject.domain.Grade</class>
+    <class>omada5.ElearningProject.domain.Certification</class>
+    <class>omada5.ElearningProject.domain.Project</class>
+    <class>omada5.ElearningProject.domain.University</class>
+    <class>omada5.ElearningProject.domain.Course</class>
+    <class>omada5.ElearningProject.domain.Person</class>
+    <properties>
+      <!--
+      <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/sample"/>
+      <property name="javax.persistence.jdbc.password" value="app"/>
+      <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
+      <property name="javax.persistence.jdbc.user" value="app"/>
+      <property name="javax.persistence.schema-generation.database.action" value="create"/>
+        -->
+      <property name="hibernate.show_sql" value="false"/>
+      <property name="hibernate.format_sql" value="true"/>
+      <property name="hibernate.connection.driver_class" value="org.h2.Driver"/>
+      <property name="hibernate.connection.url" value="jdbc:h2:./test"/>
+      <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+      <property name="hibernate.connection.username" value="sa"/>
+      <property name="hibernate.hbm2ddl.auto" value="create"/>
+    </properties>
+  </persistence-unit>
+</persistence>
