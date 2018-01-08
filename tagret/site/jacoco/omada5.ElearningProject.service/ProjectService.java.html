@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>ProjectService.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ElearningProject</a> &gt; <a href="index.source.html" class="el_package">omada5.ElearningProject.service</a> &gt; <span class="el_source">ProjectService.java</span></div><h1>ProjectService.java</h1><pre class="source lang-java linenums">package omada5.ElearningProject.service;
+
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
+import omada5.ElearningProject.domain.*;
+
+/**
+ * The ProjectService
+ * @author thegr
+ */
+public class ProjectService 
+{
+    private EntityManager em;
+
+    /**
+     * sets the entity for the service
+     * @param em
+     */
+    public ProjectService(EntityManager em) 
+<span class="fc" id="L22">    {</span>
+<span class="fc" id="L23">        this.em = em;</span>
+<span class="fc" id="L24">    }</span>
+      
+    /**
+     * updates a course project
+     * @param id
+     * @param title
+     * @param description
+     * @return true if it is update or false if it is not
+     */
+    public boolean saveOrUpdateProject(int id, String title, String description) 
+    {
+<span class="pc bpc" id="L35" title="1 of 2 branches missed.">        if (id &lt; 0)</span>
+        {
+<span class="nc" id="L37">            return false;</span>
+        }
+<span class="fc" id="L39">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L40">        tx.begin();</span>
+        List&lt;Project&gt; projects;
+<span class="fc" id="L42">        projects = em.createQuery(&quot;select p from Project p&quot;).getResultList();</span>
+<span class="pc bpc" id="L43" title="1 of 2 branches missed.">        for(Project pr: projects)</span>
+        {
+<span class="fc bfc" id="L45" title="All 2 branches covered.">            if(pr.getProject_id() == id)</span>
+            {
+<span class="pc bpc" id="L47" title="1 of 2 branches missed.">                if(title != null)</span>
+<span class="nc" id="L48">                    pr.setTitle(title);</span>
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">                if(description != null)</span>
+<span class="fc" id="L50">                    pr.setDescription(description);</span>
+<span class="fc" id="L51">                em.merge(pr);</span>
+<span class="fc" id="L52">                tx.commit();</span>
+<span class="fc" id="L53">                return true;</span>
+            }
+<span class="fc" id="L55">        }</span>
+<span class="nc" id="L56">        tx.rollback();</span>
+<span class="nc" id="L57">        return false;</span>
+    }
+    
+    
+    /**
+     * creates a new Project
+     * @param project
+     * @return true if creation succeed
+     */
+    public boolean createProject(Project project) 
+    {
+<span class="pc bpc" id="L68" title="4 of 8 branches missed.">        if (project != null | project.getTitle() != null | project.getDescription() != null) </span>
+        {
+<span class="fc" id="L70">            em.persist(project);</span>
+<span class="fc" id="L71">            return true;</span>
+        }
+<span class="nc" id="L73">        return false;</span>
+    }
+    
+    /**
+     *
+     * @param project
+     * @return
+     */
+    public Project save(Project project) 
+    {
+<span class="pc bpc" id="L83" title="4 of 8 branches missed.">        if (project != null | project.getTitle() != null | project.getDescription() != null) </span>
+        {
+<span class="fc" id="L85">            em.persist(project);</span>
+<span class="fc" id="L86">            return project;</span>
+        }
+<span class="nc" id="L88">        return null;</span>
+    }
+
+    /**
+     * returns a List with all Projects
+     * @return listProjects
+     */
+    public List&lt;Project&gt; findAllProjects()
+    {
+<span class="fc" id="L97">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L98">        tx.begin();</span>
+<span class="fc" id="L99">        List&lt;Project&gt; listProjects = em.createQuery(&quot;Select p FROM Project p&quot;).getResultList();</span>
+<span class="pc bpc" id="L100" title="1 of 2 branches missed.">        if(listProjects == null)</span>
+        {
+<span class="nc" id="L102">            tx.rollback();</span>
+<span class="nc" id="L103">            return null;</span>
+        }
+        else
+        {
+<span class="fc" id="L107">            tx.commit();</span>
+<span class="fc" id="L108">            return listProjects;</span>
+        }
+    }
+    
+    /**
+     *
+     * @param id
+     * @return
+     */
+    public Project findProjectById(int id) 
+    {
+<span class="fc" id="L119">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L120">        tx.begin();</span>
+<span class="fc" id="L121">        Project project = null;</span>
+        try 
+        {
+<span class="fc" id="L124">            project = em.find(Project.class, id);</span>
+<span class="fc" id="L125">            tx.commit();</span>
+        } 
+<span class="nc" id="L127">        catch (NoResultException ex) </span>
+        {
+<span class="nc" id="L129">            tx.rollback();</span>
+<span class="fc" id="L130">        }</span>
+<span class="fc" id="L131">        return project;</span>
+    }
+    
+    /**
+     * returns a List with Projects of a Course
+     * @param c
+     * @return listProjects
+     */
+    public List&lt;Project&gt; findProjectByCourse(Course c)
+    {
+<span class="fc" id="L141">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L142">        tx.begin();</span>
+<span class="fc" id="L143">        List&lt;Project&gt; listProjects = em.createQuery(&quot;Select p FROM Project p where p.course.course_id =:courseid&quot;).setParameter(&quot;courseid&quot;, c.getCourse_id()).getResultList();</span>
+<span class="pc bpc" id="L144" title="1 of 2 branches missed.">        if(listProjects == null)</span>
+        {
+<span class="nc" id="L146">            tx.rollback();</span>
+<span class="nc" id="L147">            return null;</span>
+        }
+        else
+        {
+<span class="fc" id="L151">            tx.commit();</span>
+<span class="fc" id="L152">            return listProjects;</span>
+        }
+        
+    }
+
+    /**
+     * deletes a Project
+     * @param project
+     * @return true if deletion succeed
+     */
+    public boolean deleteProject(Project project) 
+    {
+<span class="fc" id="L164">        EntityTransaction tx = em.getTransaction();</span>
+        
+<span class="pc bpc" id="L166" title="1 of 2 branches missed.">        if (project != null) </span>
+        {
+<span class="fc" id="L168">        	Course course = findCourseByProjectTitle(project.getTitle());</span>
+<span class="fc" id="L169">        	tx.begin();</span>
+<span class="fc" id="L170">        	project.setCourse(null);</span>
+<span class="fc" id="L171">        	course.removeProject(project);</span>
+<span class="fc" id="L172">            em.remove(project);</span>
+<span class="fc" id="L173">            em.merge(course);</span>
+<span class="fc" id="L174">            return true;</span>
+        }
+<span class="nc" id="L176">        tx.commit();</span>
+<span class="nc" id="L177">        return false;</span>
+    }
+    
+    /**
+     * assigns a Project to a Course
+     * @param project
+     * @param course
+     * @return true if assignment succeed
+     */
+    public boolean AssignProjectToCourse(Project project, Course course) 
+    {
+<span class="fc" id="L188">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L189">        tx.begin();</span>
+<span class="pc bpc" id="L190" title="2 of 4 branches missed.">        if(course != null &amp;&amp; project != null)</span>
+        {
+<span class="fc" id="L192">            course.addProject(project);</span>
+<span class="fc" id="L193">            course = em.merge(course);</span>
+<span class="fc" id="L194">            project.setCourse(course);</span>
+            //project = 
+<span class="fc" id="L196">            em.merge(project);</span>
+<span class="fc" id="L197">            tx.commit();</span>
+<span class="fc" id="L198">            return true;</span>
+        }
+        else
+        {
+<span class="nc" id="L202">            tx.rollback();</span>
+<span class="nc" id="L203">            return false;</span>
+        }
+        
+    }
+    
+    /**
+     * checks the number of Projects
+     * @param c
+     * @return true if Projects are less than 3
+     */
+    public boolean checkProjectNumber(Course c)
+    {
+<span class="fc" id="L215">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L216">        tx.begin();</span>
+<span class="fc" id="L217">        List&lt;Project&gt; projects = em.createQuery(&quot;select p from Project p where p.course.course_id like :courseid&quot;).setParameter(&quot;courseid&quot;, c.getCourse_id()).getResultList();</span>
+<span class="fc" id="L218">        tx.commit();</span>
+<span class="pc bpc" id="L219" title="1 of 2 branches missed.">        if(projects.size()&lt;3)</span>
+<span class="fc" id="L220">            return true;</span>
+        else
+        {
+<span class="nc" id="L223">            tx.rollback();</span>
+<span class="nc" id="L224">            return false;</span>
+        }
+    }
+    
+    /**
+     * returns a Course by ProjectTitle
+     * @param title
+     * @return the Course
+     */
+    public Course findCourseByProjectTitle(String title) 
+    {
+<span class="fc" id="L235">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L236">        tx.begin();</span>
+<span class="pc bpc" id="L237" title="1 of 2 branches missed.">        if(title != null)</span>
+        {
+<span class="fc" id="L239">            List&lt;Course&gt; results = null;</span>
+<span class="fc" id="L240">            results = em.createQuery(&quot;select c from Course c join fetch c.projects as p where p.title like :projecttitle&quot;).setParameter(&quot;projecttitle&quot;, title).getResultList();</span>
+<span class="fc" id="L241">            tx.commit();</span>
+<span class="fc" id="L242">            return results.get(0);</span>
+        }
+        else
+        {
+<span class="nc" id="L246">            tx.rollback();</span>
+<span class="nc" id="L247">            return null;</span>
+        }
+    }
+    
+    /**
+     * creates a new Project
+     * @param title
+     * @param description
+     * @param course
+     * @return true if creation succeed
+     */
+    public boolean CreateNewProject(String title, String description, Course course)
+    {
+<span class="fc" id="L260">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L261">        tx.begin();</span>
+<span class="pc bpc" id="L262" title="3 of 6 branches missed.">        if(course != null &amp;&amp; title != null &amp;&amp; description != null)</span>
+        {
+<span class="fc" id="L264">            Project project = new Project(title, description);</span>
+<span class="fc" id="L265">            project.setCourse(course);</span>
+<span class="fc" id="L266">            course.addProject(project);</span>
+<span class="fc" id="L267">            em.merge(project);</span>
+<span class="fc" id="L268">            em.merge(course);</span>
+<span class="fc" id="L269">            tx.commit();</span>
+<span class="fc" id="L270">            return true;</span>
+        }
+        else
+        {
+<span class="nc" id="L274">            tx.rollback();</span>
+<span class="nc" id="L275">            return false;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

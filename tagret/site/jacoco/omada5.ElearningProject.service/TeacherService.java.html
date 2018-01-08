@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>TeacherService.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ElearningProject</a> &gt; <a href="index.source.html" class="el_package">omada5.ElearningProject.service</a> &gt; <span class="el_source">TeacherService.java</span></div><h1>TeacherService.java</h1><pre class="source lang-java linenums">package omada5.ElearningProject.service;
+
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.EntityTransaction;
+import omada5.ElearningProject.domain.*;
+/**
+ * The TeacherService Class
+ * @author thegr
+ */
+public class TeacherService 
+{
+    private final EntityManager em;
+
+    /**
+     *sets the entity manager for the service
+     * @param em
+     */
+    public TeacherService(EntityManager em) 
+<span class="fc" id="L21">    {</span>
+<span class="fc" id="L22">        this.em = em;</span>
+<span class="fc" id="L23">    }</span>
+
+    /**
+     * returns a List with Teachers by LastNam
+     * @param surname
+     * @return results
+     */
+    public List&lt;Teacher&gt; findTeachersByLastName(String surname) 
+    {
+<span class="fc" id="L32">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L33">        tx.begin();</span>
+        List&lt;Teacher&gt; results;
+<span class="fc" id="L35">        results = em.createQuery(&quot;select t from Teacher t where t.surname like :surname &quot;).setParameter(&quot;surname&quot;, surname).getResultList();</span>
+<span class="fc" id="L36">        tx.commit();</span>
+<span class="fc" id="L37">        return results;</span>
+    }
+    
+    /**
+     * updates a Teacher
+     * @param id
+     * @param name
+     * @param Surname
+     * @param mail
+     * @param password
+     * @return the updated Teacher
+     */
+    public Teacher saveOrUpdateTeacher(int id,String name, String Surname, String mail, String password) 
+    {	
+<span class="pc bpc" id="L51" title="1 of 2 branches missed.">        if (id &lt; 0)</span>
+        {
+<span class="nc" id="L53">            return null;</span>
+        }
+<span class="fc" id="L55">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L56">        tx.begin();</span>
+<span class="fc" id="L57">        List&lt;Teacher&gt; teachers = null;</span>
+<span class="fc" id="L58">        teachers = em.createQuery(&quot;select t from Teacher t&quot;).getResultList();</span>
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">        for(Teacher teacher: teachers)</span>
+        {
+<span class="pc bpc" id="L61" title="1 of 2 branches missed.">            if(teacher.getPerson_id()==id)</span>
+            {
+<span class="pc bpc" id="L63" title="1 of 2 branches missed.">                if(name!=null)</span>
+<span class="fc" id="L64">                    teacher.setName(name);</span>
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">                if(Surname!=null)</span>
+<span class="nc" id="L66">                    teacher.setSurname(Surname);</span>
+<span class="pc bpc" id="L67" title="1 of 2 branches missed.">                if(mail!=null)</span>
+<span class="nc" id="L68">                    teacher.setEmail(mail);</span>
+<span class="pc bpc" id="L69" title="1 of 2 branches missed.">                if(password!=null)</span>
+<span class="nc" id="L70">                    teacher.setPassword(password);</span>
+<span class="fc" id="L71">                em.merge(teacher);</span>
+<span class="fc" id="L72">                tx.commit();</span>
+<span class="fc" id="L73">                return teacher;</span>
+            }
+<span class="nc" id="L75">        }</span>
+<span class="nc" id="L76">        return null;</span>
+    }
+
+    /**
+     * creates a new Teacher
+     * @param t
+     * @return the new Teacher
+     */
+    public boolean createTeacher(Teacher t) 
+    {
+<span class="pc bpc" id="L86" title="1 of 2 branches missed.">        if (t != null) </span>
+        {
+<span class="fc" id="L88">            em.persist(t);</span>
+<span class="fc" id="L89">            return true;</span>
+        }
+<span class="nc" id="L91">        return false;</span>
+    }
+    
+    /**
+     * creates a new Teacher		
+     * @param name
+     * @param Surname
+     * @param mail
+     * @param password
+     * @return the new Teacher
+     */
+    public Teacher createTeacher(String name, String Surname, String mail, String password)
+    {	
+<span class="pc bpc" id="L104" title="7 of 8 branches missed.">        if (name == null &amp;&amp; Surname == null &amp;&amp; mail == null &amp;&amp; password == null)</span>
+        {
+<span class="nc" id="L106">            return null;</span>
+        }
+<span class="fc" id="L108">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L109">        tx.begin();</span>
+        List&lt;Teacher&gt; teachers;
+<span class="fc" id="L111">        teachers = em.createQuery(&quot;select t from Teacher t&quot;).getResultList();</span>
+<span class="fc bfc" id="L112" title="All 2 branches covered.">        for(Teacher teacher: teachers)</span>
+        {
+<span class="fc bfc" id="L114" title="All 2 branches covered.">            if(mail.equalsIgnoreCase(teacher.getEmail()))</span>
+            {
+<span class="fc" id="L116">                tx.rollback();</span>
+<span class="fc" id="L117">                return null;</span>
+            }
+<span class="fc" id="L119">        }</span>
+<span class="fc" id="L120">        Teacher newTeacher = new Teacher(name, Surname, mail, password);</span>
+<span class="fc" id="L121">        em.persist(newTeacher);</span>
+<span class="fc" id="L122">        tx.commit();</span>
+<span class="fc" id="L123">        return newTeacher;</span>
+    }
+    
+    /**
+     *
+     * @param email
+     * @return
+     */
+    public boolean deleteTeacher(String email) 
+    {
+<span class="fc" id="L133">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L134">        tx.begin();</span>
+        try 
+        {
+<span class="fc" id="L137">            Teacher teacher = (Teacher) em.createQuery(&quot;select t from Teacher t where t.email =:email&quot;).setParameter(&quot;email&quot;, email).getSingleResult();</span>
+<span class="fc bfc" id="L138" title="All 2 branches covered.">            for(int i = 0; i &lt; teacher.getCourses().size(); i++)</span>
+            {
+                //teacher.getCourses().get(i);
+<span class="fc" id="L141">                em.merge(teacher.getCourses().get(i));</span>
+            }
+<span class="fc" id="L143">            teacher.getCourses().clear();</span>
+<span class="fc" id="L144">            em.remove(teacher);</span>
+        }
+<span class="nc" id="L146">        catch (EntityNotFoundException e) </span>
+        {
+<span class="nc" id="L148">            tx.rollback();</span>
+<span class="nc" id="L149">            return false;</span>
+<span class="fc" id="L150">        }</span>
+<span class="fc" id="L151">        tx.commit();</span>
+<span class="fc" id="L152">        return true;</span>
+    }
+
+    /**
+     * returns a List with all Teachers
+     * @return results
+     */
+    public List&lt;Teacher&gt; findAllTeachers() 
+    {
+<span class="fc" id="L161">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L162">        tx.begin();</span>
+<span class="fc" id="L163">        List&lt;Teacher&gt; results = null;</span>
+<span class="fc" id="L164">        results = em.createQuery(&quot;select t from Teacher t&quot;, Teacher.class).getResultList();</span>
+<span class="fc" id="L165">        tx.commit();</span>
+<span class="fc" id="L166">        return results;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

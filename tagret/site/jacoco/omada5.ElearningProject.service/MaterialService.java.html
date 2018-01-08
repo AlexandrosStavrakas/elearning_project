@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>MaterialService.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ElearningProject</a> &gt; <a href="index.source.html" class="el_package">omada5.ElearningProject.service</a> &gt; <span class="el_source">MaterialService.java</span></div><h1>MaterialService.java</h1><pre class="source lang-java linenums">package omada5.ElearningProject.service;
+
+import java.io.FileOutputStream;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
+
+import omada5.ElearningProject.domain.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+/**
+ * The MaterialService Class
+ * @author thegr
+ */
+public class MaterialService 
+{
+private EntityManager em;
+
+    /**
+     * sets the entity manager for the service
+     * @param em
+     */
+    public MaterialService(EntityManager em) 
+<span class="fc" id="L26">    {</span>
+<span class="fc" id="L27">        this.em = em;</span>
+<span class="fc" id="L28">    }</span>
+    
+    /**
+     *
+     * @param material
+     * @return
+     */
+    public Material save(Material material) 
+    {
+<span class="pc bpc" id="L37" title="4 of 8 branches missed.">        if (material != null | material.getTitle() != null | material.getDescription() != null) </span>
+        {
+<span class="fc" id="L39">            em.persist(material);</span>
+<span class="fc" id="L40">            return material;</span>
+        }
+<span class="nc" id="L42">        return null;</span>
+    }
+    
+    /**
+     * updates a Material
+     * @param id
+     * @param title
+     * @param description
+     * @return true if updated
+     */
+        public boolean saveOrUpdateMaterial(int id, String title, String description) 
+        {
+<span class="pc bpc" id="L54" title="1 of 2 branches missed.">            if (id &lt; 0)</span>
+            {
+<span class="nc" id="L56">                return false;</span>
+            }
+<span class="fc" id="L58">            EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L59">            tx.begin();</span>
+            List&lt;Material&gt; materials;
+<span class="fc" id="L61">            materials = em.createQuery(&quot;select m from Material m&quot;).getResultList();</span>
+<span class="pc bpc" id="L62" title="1 of 2 branches missed.">            for(Material mr: materials)</span>
+            {
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">                if(mr.getMat_id() == id)</span>
+                {
+<span class="pc bpc" id="L66" title="1 of 2 branches missed.">                    if(title != null)</span>
+<span class="fc" id="L67">                        mr.setTitle(title);</span>
+<span class="pc bpc" id="L68" title="1 of 2 branches missed.">                    if(description != null)</span>
+<span class="nc" id="L69">                        mr.setDescription(description);</span>
+<span class="fc" id="L70">                    em.merge(mr);</span>
+<span class="fc" id="L71">                    tx.commit();</span>
+<span class="fc" id="L72">                    return true;</span>
+                }
+<span class="nc" id="L74">            }</span>
+<span class="nc" id="L75">            tx.rollback();</span>
+<span class="nc" id="L76">            return false;</span>
+        }
+    
+    /**
+     * creates a new Material
+     * @param title
+     * @param description
+     * @param course
+     * @return true if creation succeed
+     */
+    public boolean CreateNewMaterial(String title, String description, Course course)
+    {
+<span class="fc" id="L88">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L89">        tx.begin();</span>
+<span class="pc bpc" id="L90" title="3 of 6 branches missed.">        if(course != null &amp;&amp; title != null &amp;&amp; description != null)</span>
+        {
+<span class="fc" id="L92">            Material material = new Material(title, description);</span>
+            byte[] bFile;
+<span class="fc" id="L94">            FileController f = new FileController();</span>
+<span class="fc" id="L95">            File file = new File(&quot;C:\\Users\\thegr\\Documents\\test1.txt&quot;);</span>
+<span class="fc" id="L96">            bFile = f.FileUpolader(file);</span>
+<span class="fc" id="L97">            material.setFile(bFile);</span>
+<span class="fc" id="L98">            material.setCourse(course);</span>
+<span class="fc" id="L99">            course.addMaterial(material);</span>
+<span class="fc" id="L100">            em.merge(material);</span>
+<span class="fc" id="L101">            em.merge(course);</span>
+<span class="fc" id="L102">            tx.commit();</span>
+<span class="fc" id="L103">            return true;</span>
+        }
+        else
+        {
+<span class="nc" id="L107">            tx.rollback();</span>
+<span class="nc" id="L108">            return false;</span>
+        }
+    }
+    
+    /**
+     * Creates a new Material for a course
+     * @param title
+     * @param description
+     * @return Material
+     */
+    public Material CreateNewMaterial(String title, String description)
+    {
+<span class="fc" id="L120">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L121">        tx.begin();</span>
+<span class="pc bpc" id="L122" title="2 of 4 branches missed.">        if(title != null &amp;&amp; description != null)</span>
+        {
+<span class="fc" id="L124">            Material material = new Material(title, description);</span>
+            byte[] bFile;
+<span class="fc" id="L126">            FileController f = new FileController();</span>
+<span class="fc" id="L127">            File file = new File(&quot;C:\\Users\\thegr\\Documents\\test1.txt&quot;);</span>
+<span class="fc" id="L128">            bFile = f.FileUpolader(file);</span>
+<span class="fc" id="L129">            material.setFile(bFile);</span>
+<span class="fc" id="L130">            em.persist(material);</span>
+<span class="fc" id="L131">            tx.commit();</span>
+<span class="fc" id="L132">            return material;</span>
+        }
+        else
+        {
+<span class="nc" id="L136">            tx.rollback();</span>
+<span class="nc" id="L137">            return null;</span>
+        }
+    }
+    
+    /**
+     *
+     * @param material
+     * @return
+     */
+    public boolean createMaterial(Material material) 
+    {
+<span class="pc bpc" id="L148" title="4 of 8 branches missed.">        if (material != null | material.getTitle() != null | material.getDescription() != null) </span>
+        {
+<span class="fc" id="L150">            em.persist(material);</span>
+<span class="fc" id="L151">            return true;</span>
+        }
+<span class="nc" id="L153">        return false;</span>
+    }
+
+    /**
+     * returns a List with all Materials	
+     * @return listMaterials 
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
+    public List&lt;Material&gt; findAllMaterials() throws FileNotFoundException, IOException 
+    {
+<span class="fc" id="L164">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L165">        tx.begin();</span>
+<span class="fc" id="L166">        List&lt;Material&gt; listMaterials = em.createQuery(&quot;Select m FROM Material m&quot;).getResultList();</span>
+<span class="pc bpc" id="L167" title="1 of 2 branches missed.">        if(listMaterials == null)</span>
+        {
+<span class="nc" id="L169">            tx.rollback();</span>
+<span class="nc" id="L170">            return null;</span>
+        }
+        else
+        {
+<span class="fc" id="L174">            int counter = 1;</span>
+<span class="fc bfc" id="L175" title="All 2 branches covered.">            for(Material material: listMaterials)</span>
+            {
+<span class="fc" id="L177">                FileOutputStream fileOuputStream = new FileOutputStream(&quot;C:\\Users\\thegr\\Documents\\fileuploaded&quot;+counter+&quot;.txt&quot;); </span>
+<span class="fc" id="L178">                fileOuputStream.write(material.getFile());</span>
+<span class="fc" id="L179">                counter++;</span>
+<span class="fc" id="L180">            }</span>
+        }
+<span class="fc" id="L182">        tx.commit();</span>
+<span class="fc" id="L183">        return listMaterials;</span>
+    }
+    
+    /**
+     *
+     * @param id
+     * @return
+     */
+    public Material findMaterialById(int id) 
+    {
+<span class="fc" id="L193">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L194">        tx.begin();</span>
+<span class="fc" id="L195">        Material material = null;</span>
+        try 
+        {
+<span class="fc" id="L198">        	material = em.find(Material.class, id);</span>
+<span class="fc" id="L199">            tx.commit();</span>
+        } 
+<span class="nc" id="L201">        catch (NoResultException ex) </span>
+        {
+<span class="nc" id="L203">            tx.rollback();</span>
+<span class="fc" id="L204">        }</span>
+<span class="fc" id="L205">        return material;</span>
+    }
+
+    /**
+     * deletes a Material
+     * @param material
+     * @return true if deletion succeed
+     */
+    public boolean deleteMaterial(Material material) 
+    {
+<span class="fc" id="L215">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L216">        tx.begin();</span>
+<span class="pc bpc" id="L217" title="1 of 2 branches missed.">        if (material != null) </span>
+        {
+<span class="fc" id="L219">            Course tmp = material.getCourse();</span>
+<span class="fc" id="L220">            tmp.removeMaterial(material);</span>
+<span class="fc" id="L221">            material.setCourse(null);</span>
+<span class="fc" id="L222">            em.remove(material);</span>
+<span class="fc" id="L223">            em.merge(tmp);</span>
+<span class="fc" id="L224">            tx.commit();</span>
+<span class="fc" id="L225">            return true;</span>
+        }
+<span class="nc" id="L227">        tx.rollback();</span>
+<span class="nc" id="L228">        return false;</span>
+    }
+    
+    /**
+     * assigns a Material to a Course
+     * @param material
+     * @param course
+     * @return true if assignment succeed
+     */
+    public boolean AssignMaterialToCourse(Material material, Course course) 
+    {
+<span class="fc" id="L239">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L240">        tx.begin();</span>
+<span class="pc bpc" id="L241" title="2 of 4 branches missed.">        if(course != null &amp;&amp; material != null)</span>
+        {
+<span class="fc" id="L243">            course.addMaterial(material);</span>
+<span class="fc" id="L244">            material.setCourse(course);</span>
+<span class="fc" id="L245">            em.merge(course);</span>
+<span class="fc" id="L246">            em.merge(material);</span>
+        }
+<span class="fc" id="L248">        tx.commit();</span>
+<span class="fc" id="L249">        return true;</span>
+    }
+    
+    /**
+     * returns a List with the Materials of a Course
+     * @param c
+     * @return listMaterials 
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
+    public List&lt;Material&gt; findMaterialByCourse(Course c) throws FileNotFoundException, IOException
+    {
+<span class="fc" id="L261">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L262">        tx.begin();</span>
+<span class="fc" id="L263">        List&lt;Material&gt; listMaterials = em.createQuery(&quot;Select m FROM Material m where m.course.course_id =:courseid&quot;).setParameter(&quot;courseid&quot;, c.getCourse_id()).getResultList();</span>
+<span class="pc bpc" id="L264" title="1 of 2 branches missed.">        if(listMaterials == null)</span>
+        {
+<span class="nc" id="L266">            tx.rollback();</span>
+<span class="nc" id="L267">            return null;</span>
+        }
+        else
+        {
+<span class="fc" id="L271">            int counter = 1;</span>
+<span class="fc bfc" id="L272" title="All 2 branches covered.">            for(Material material: listMaterials)</span>
+            {
+<span class="fc" id="L274">                FileOutputStream fileOuputStream = new FileOutputStream(&quot;C:\\Users\\thegr\\Documents\\fileuploadedFMBC&quot;+counter+&quot;.txt&quot;); </span>
+<span class="fc" id="L275">                fileOuputStream.write(material.getFile());</span>
+<span class="fc" id="L276">                counter++;</span>
+<span class="fc" id="L277">            }</span>
+        }
+<span class="fc" id="L279">        tx.commit();</span>
+<span class="fc" id="L280">        return listMaterials;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

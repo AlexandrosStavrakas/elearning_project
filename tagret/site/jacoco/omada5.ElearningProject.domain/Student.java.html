@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Student.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ElearningProject</a> &gt; <a href="index.source.html" class="el_package">omada5.ElearningProject.domain</a> &gt; <span class="el_source">Student.java</span></div><h1>Student.java</h1><pre class="source lang-java linenums">package omada5.ElearningProject.domain;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.*;
+
+/**
+ * The Student Class
+ * @author thegr
+ */
+@Entity
+@DiscriminatorValue(&quot;Student&quot;)
+public class Student extends Person implements Serializable 
+{
+<span class="fc" id="L16">    @OneToMany(orphanRemoval=true,cascade = CascadeType.ALL, mappedBy=&quot;student&quot;, fetch=FetchType.LAZY)</span>
+    private List&lt;Certification&gt; certifications = new ArrayList&lt;Certification&gt;();
+
+<span class="fc" id="L19">    @OneToMany(orphanRemoval=true,cascade = CascadeType.ALL, mappedBy=&quot;student&quot;, fetch=FetchType.LAZY)</span>
+    private List&lt;Grade&gt; grades = new ArrayList&lt;Grade&gt;();
+
+<span class="fc" id="L22">    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE },fetch=FetchType.LAZY)</span>
+    @JoinTable(name=&quot;Student_Course&quot;,joinColumns = {@JoinColumn(name=&quot;StudentId&quot;)},inverseJoinColumns = {@JoinColumn(name=&quot;CourseId&quot;)})
+    private List&lt;Course&gt; courses = new ArrayList&lt;Course&gt;();
+
+    /**
+     * Default constructor for Student
+     */
+<span class="fc" id="L29">    public Student(){}</span>
+    
+    /**
+     * A constructor for Student
+     * @param name
+     * @param surname
+     * @param email
+     * @param password
+     */
+    public Student(String name, String surname, String email, String password) 
+<span class="fc" id="L39">    {</span>
+<span class="fc" id="L40">        super.setName(name);</span>
+<span class="fc" id="L41">        super.setSurname(surname);</span>
+<span class="fc" id="L42">        super.setEmail(email);</span>
+<span class="fc" id="L43">        super.setPassword(password);</span>
+<span class="fc" id="L44">    }</span>
+
+    /**
+     * returns the list of certifications student has
+     * @return certifications
+     */
+    public List&lt;Certification&gt; getCertifications() 
+    {
+<span class="nc" id="L52">        return this.certifications;</span>
+    }
+
+    /**
+     * returns the list of grades student has
+     * @return grades
+     */
+    public List&lt;Grade&gt; getGrades() 
+    {
+<span class="nc" id="L61">        return this.grades;</span>
+    }
+
+
+    /**
+     * returns the list of courses which student has
+     * @return courses
+     */
+    public List&lt;Course&gt; getCourses() 
+    {
+<span class="fc" id="L71">        return this.courses;</span>
+    }
+
+
+    /**
+     * adds a course to the list of courses of a student
+     * @param course
+     */
+    public void addCourses(Course course) 
+    {
+<span class="pc bpc" id="L81" title="1 of 2 branches missed.">        if (course != null)</span>
+<span class="fc" id="L82">            course.addStudents(this);</span>
+<span class="fc" id="L83">    }</span>
+    
+    /**
+     * removes a course from the list of courses
+     * @param course
+     */
+    public void removeCourse(Course course) 
+    {
+<span class="pc bpc" id="L91" title="1 of 2 branches missed.">        if (course != null) </span>
+<span class="fc" id="L92">            course.removeStudent(this);</span>
+<span class="fc" id="L93">    }</span>
+    
+    /**
+     * adds a grade to the grade list of the student
+     * @param grade
+     */
+    public void addGrade(Grade grade) 
+    {
+<span class="fc" id="L101">        grades.add(grade);</span>
+<span class="fc" id="L102">    }</span>
+    
+    /**
+     * adds a certification to the certification list of the student
+     * @param certification
+     */
+    public void addCertification(Certification certification) 
+    {
+<span class="fc" id="L110">        certifications.add(certification);</span>
+<span class="fc" id="L111">    }</span>
+    
+    /**
+     * removes a grade from a grade list of a student
+     * @param grade
+     */
+    public void removeGrade(Grade grade)
+    {
+<span class="nc" id="L119">        grades.remove(grade);</span>
+<span class="nc" id="L120">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

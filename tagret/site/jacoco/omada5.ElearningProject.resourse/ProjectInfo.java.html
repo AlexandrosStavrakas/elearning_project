@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>ProjectInfo.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ElearningProject</a> &gt; <a href="index.source.html" class="el_package">omada5.ElearningProject.resourse</a> &gt; <span class="el_source">ProjectInfo.java</span></div><h1>ProjectInfo.java</h1><pre class="source lang-java linenums">/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package omada5.ElearningProject.resourse;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import omada5.ElearningProject.domain.*;
+
+/**
+ *
+ * @author thegr
+ */
+@XmlRootElement
+public class ProjectInfo 
+{
+    private int project_id;
+
+    private String title;
+
+    private String description;
+
+    private int course_id;
+    
+    /**
+     *
+     */
+<span class="fc" id="L34">    public ProjectInfo(){}</span>
+    
+    /**
+     *
+     * @param p
+     */
+    public ProjectInfo(Project p)
+<span class="fc" id="L41">    {</span>
+<span class="fc" id="L42">        project_id = p.getProject_id();</span>
+<span class="fc" id="L43">        title = p.getTitle();</span>
+<span class="fc" id="L44">        description = p.getDescription();</span>
+<span class="fc" id="L45">        course_id = p.getCourse().getCourse_id();</span>
+<span class="fc" id="L46">    }</span>
+    
+    /**
+     *
+     * @return
+     */
+    public int getProject_id() 
+    {
+<span class="fc" id="L54">        return this.project_id;</span>
+    }
+
+    /**
+     *
+     * @param project_id
+     */
+    public void setProject_id(int project_id) 
+    {
+<span class="fc" id="L63">        this.project_id = project_id;</span>
+<span class="fc" id="L64">    }</span>
+    /**
+     * returns the project title
+     * @return title
+     */ 
+    public String getTitle() 
+    {
+<span class="fc" id="L71">        return this.title;</span>
+    }
+
+    /**
+     * sets the title of the project
+     * @param title
+     */
+    public void setTitle(String title) 
+    {
+<span class="fc" id="L80">        this.title = title;</span>
+<span class="fc" id="L81">    }</span>
+
+    /**
+     * returns the description of the project
+     * @return description
+     */
+    public String getDescription() 
+    {
+<span class="fc" id="L89">        return this.description;</span>
+    }
+
+    /**
+     * sets the description of the project
+     * @param description
+     */
+    public void setDescription(String description) 
+    {
+<span class="fc" id="L98">        this.description = description;</span>
+<span class="fc" id="L99">    }</span>
+    
+    /**
+     * returns the course the project belongs
+     * @return course
+     */
+    public int getCourseId() 
+    {
+<span class="fc" id="L107">        return this.course_id;</span>
+    }
+
+    /**
+     * sets the course the project belongs
+     * @param course_id
+     */
+    public void setCourseId(int course_id) 
+    {
+<span class="fc" id="L116">        this.course_id = course_id;</span>
+<span class="fc" id="L117">    }</span>
+    
+    /**
+     *
+     * @param p
+     * @return
+     */
+    public static ProjectInfo wrap(Project p) 
+    {
+<span class="nc" id="L126">        return new ProjectInfo(p);</span>
+    }
+
+    /**
+     *
+     * @param projects
+     * @return
+     */
+    public static List&lt;ProjectInfo&gt; wrap(List&lt;Project&gt; projects) 
+    {
+<span class="fc" id="L136">        List&lt;ProjectInfo&gt; projectInfoList = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">        for (Project p : projects) </span>
+        {
+<span class="fc" id="L139">                projectInfoList.add(new ProjectInfo(p));</span>
+<span class="fc" id="L140">        }</span>
+<span class="fc" id="L141">        return projectInfoList;</span>
+    }
+    
+    /**
+     *
+     * @param em
+     * @return
+     */
+    public Project getProject(EntityManager em) 
+    {
+        Project project;
+
+<span class="fc bfc" id="L153" title="All 2 branches covered.">        if (project_id &gt; 0) </span>
+        {
+<span class="fc" id="L155">            project = em.find(Project.class, project_id);</span>
+        } 
+        else 
+        {
+<span class="fc" id="L159">            project = new Project();</span>
+<span class="fc" id="L160">            project.setTitle(title);</span>
+<span class="fc" id="L161">            project.setDescription(description);</span>
+<span class="pc bpc" id="L162" title="1 of 2 branches missed.">            if(course_id &gt; 0)</span>
+            {
+<span class="nc" id="L164">            	Course course = em.getReference(Course.class, course_id);</span>
+<span class="nc" id="L165">                project.setCourse(course);</span>
+            }
+            
+        }
+<span class="fc" id="L169">        return project;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

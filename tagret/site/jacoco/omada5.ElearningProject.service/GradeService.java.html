@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>GradeService.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ElearningProject</a> &gt; <a href="index.source.html" class="el_package">omada5.ElearningProject.service</a> &gt; <span class="el_source">GradeService.java</span></div><h1>GradeService.java</h1><pre class="source lang-java linenums">package omada5.ElearningProject.service;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import omada5.ElearningProject.domain.*;
+
+/**
+ * The GradeService Class
+ * @author thegr
+ */
+public class GradeService 
+{
+    private final EntityManager em;
+
+    /**
+     * sets the entity manager for the service
+     * @param em
+     */
+    public GradeService(EntityManager em) 
+<span class="fc" id="L25">    {</span>
+<span class="fc" id="L26">        this.em = em;</span>
+<span class="fc" id="L27">    }</span>
+    
+    /**
+     * returns a List with all Projects
+     * @return listProjects
+     */
+    public List&lt;Project&gt; findAllProjects()
+    {
+<span class="fc" id="L35">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L36">        tx.begin();</span>
+        List&lt;Project&gt; listProjects;
+<span class="fc" id="L38">        listProjects = em.createQuery(&quot;select p from Project p&quot;).getResultList();</span>
+
+<span class="pc bpc" id="L40" title="1 of 2 branches missed.">        if(listProjects == null)</span>
+        {
+<span class="nc" id="L42">            tx.rollback();</span>
+<span class="nc" id="L43">            return null;</span>
+        }
+        else
+        {
+<span class="fc" id="L47">            tx.commit();</span>
+<span class="fc" id="L48">            return listProjects;</span>
+        }
+    }
+    
+    /**
+     *
+     * @return
+     */
+    public List&lt;Grade&gt; findAllGrades()
+    {
+<span class="fc" id="L58">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L59">        tx.begin();</span>
+        List&lt;Grade&gt; listGrades;
+<span class="fc" id="L61">        listGrades = em.createQuery(&quot;select g from Grade g&quot;).getResultList();</span>
+
+<span class="pc bpc" id="L63" title="1 of 2 branches missed.">        if(listGrades == null)</span>
+        {
+<span class="nc" id="L65">            tx.rollback();</span>
+<span class="nc" id="L66">            return null;</span>
+        }
+        else
+        {
+<span class="fc" id="L70">            tx.commit();</span>
+<span class="fc" id="L71">            return listGrades;</span>
+        }
+    }
+    
+    /**
+     *
+     * @param grade
+     * @return
+     */
+    public Grade save(Grade grade) 
+    {
+<span class="fc" id="L82">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L83">        tx.begin();</span>
+<span class="pc bpc" id="L84" title="1 of 2 branches missed.">        if (grade.getGrade_id() &gt; 0) </span>
+        {
+<span class="fc" id="L86">            grade = em.merge(grade);</span>
+        } 
+        else 
+        {
+<span class="nc" id="L90">            em.persist(grade);</span>
+        }
+<span class="fc" id="L92">        tx.commit();</span>
+<span class="fc" id="L93">        return grade;</span>
+    }
+    
+    /**
+     * creates a new Grade
+     * @param p
+     * @param s
+     * @param f
+     * @return the Grade
+     */
+    public Grade createGrade(Project p, Student s, File f)
+    {
+<span class="fc" id="L105">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L106">        tx.begin();</span>
+<span class="fc" id="L107">        Grade g = new Grade();</span>
+<span class="fc" id="L108">        g.setProject(p);</span>
+<span class="fc" id="L109">        g.setStudent(s);</span>
+        byte[] bFile;
+<span class="fc" id="L111">        FileController file = new FileController();</span>
+<span class="fc" id="L112">        bFile = file.FileUpolader(f);</span>
+<span class="fc" id="L113">        g.setFile(bFile);</span>
+<span class="fc" id="L114">        em.persist(g);</span>
+<span class="fc" id="L115">        tx.commit();</span>
+<span class="fc" id="L116">        return g;</span>
+    }
+    
+    /**
+     * uploads a Project file
+     * @param g
+     * @param f
+     */
+    public void uploadProjectFile(Grade g, File f)
+    {
+<span class="nc" id="L126">        EntityTransaction tx = em.getTransaction();</span>
+<span class="nc" id="L127">        tx.begin();</span>
+        byte[] bFile;
+<span class="nc" id="L129">        FileController file = new FileController();</span>
+<span class="nc" id="L130">        bFile = file.FileUpolader(f);</span>
+<span class="nc" id="L131">        g.setFile(bFile);</span>
+<span class="nc" id="L132">        em.persist(g);</span>
+<span class="nc" id="L133">        tx.commit();</span>
+<span class="nc" id="L134">    }</span>
+    
+    /**
+     * returns a List the Grades of a Project
+     * @param project
+     * @return results
+     */
+    public List&lt;Grade&gt; findGradeByProject(Project project) 
+    {
+<span class="fc" id="L143">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L144">        tx.begin();</span>
+        List&lt;Grade&gt; results;
+<span class="fc" id="L146">        results = em.createQuery(&quot;select g from Grade g join fetch g.project as p where p.project_id =:pid&quot;).setParameter(&quot;pid&quot;, project.getProject_id()).getResultList();</span>
+<span class="pc bpc" id="L147" title="1 of 2 branches missed.">        if(results.isEmpty())</span>
+        {
+<span class="nc" id="L149">            tx.rollback();</span>
+<span class="nc" id="L150">            return null;</span>
+        }
+        else
+        {
+<span class="fc" id="L154">            tx.commit();</span>
+<span class="fc" id="L155">            return results;</span>
+        }
+    }
+    
+    /**
+     * sets a Score to a Grade
+     * @param grade
+     * @param score
+     * @return true if the addition of score succeed
+     */
+    public boolean setScoretoGrade(Grade grade, int score) 
+    {
+<span class="fc" id="L167">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L168">        tx.begin();</span>
+<span class="pc bpc" id="L169" title="1 of 2 branches missed.">        if (grade != null) </span>
+        {
+<span class="fc" id="L171">            grade.setScore(score);</span>
+<span class="fc" id="L172">            em.merge(grade);</span>
+<span class="fc" id="L173">            tx.commit();</span>
+<span class="fc" id="L174">            return true;</span>
+        }
+        else
+        {
+<span class="nc" id="L178">            tx.rollback();</span>
+<span class="nc" id="L179">            return false;</span>
+        }
+    }
+    
+    /**
+     * 
+     * @param grades
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
+    public void getFileForGrade(List&lt;Grade&gt; grades) throws FileNotFoundException, IOException
+    {
+<span class="fc" id="L191">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L192">        tx.begin();</span>
+<span class="fc" id="L193">        int counter = 1;</span>
+<span class="fc bfc" id="L194" title="All 2 branches covered.">        for(Grade g:grades)</span>
+        {
+<span class="fc" id="L196">            FileOutputStream fileOuputStream = new FileOutputStream(&quot;C:\\Users\\thegr\\Documents\\project_for_grade&quot;+counter+&quot;.txt&quot;); </span>
+<span class="fc" id="L197">            fileOuputStream.write(g.getFile());</span>
+<span class="fc" id="L198">            counter++;</span>
+<span class="fc" id="L199">            em.merge(g);</span>
+<span class="fc" id="L200">        }</span>
+<span class="fc" id="L201">        tx.commit();</span>
+<span class="fc" id="L202">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

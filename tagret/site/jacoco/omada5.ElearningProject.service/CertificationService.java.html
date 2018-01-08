@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>CertificationService.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ElearningProject</a> &gt; <a href="index.source.html" class="el_package">omada5.ElearningProject.service</a> &gt; <span class="el_source">CertificationService.java</span></div><h1>CertificationService.java</h1><pre class="source lang-java linenums">package omada5.ElearningProject.service;
+
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import omada5.ElearningProject.domain.*;
+/**
+ * The CertificationService Class
+ * @author thegr
+ */
+public class CertificationService 
+{
+    private EntityManager em;
+
+    /**
+     * sets the entity manager for the service
+     * @param em
+     */
+    public CertificationService(EntityManager em) 
+<span class="fc" id="L20">    {</span>
+<span class="fc" id="L21">        this.em = em;</span>
+<span class="fc" id="L22">    }</span>
+    
+    /**
+     * returns a List of all Certifications
+     * @return ListCertifications
+     */ 
+    public List&lt;Certification&gt; findAllCertifications()
+    {
+<span class="fc" id="L30">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L31">        tx.begin();</span>
+<span class="fc" id="L32">        List&lt;Certification&gt; listCertifications = null;</span>
+<span class="fc" id="L33">        listCertifications = em.createQuery(&quot;select c from Certification c&quot;).getResultList();</span>
+
+<span class="pc bpc" id="L35" title="1 of 2 branches missed.">        if(listCertifications == null)</span>
+        {
+<span class="nc" id="L37">            tx.rollback();</span>
+<span class="nc" id="L38">            return null;</span>
+        }
+        else
+        {
+<span class="fc" id="L42">            tx.commit();</span>
+<span class="fc" id="L43">            return listCertifications;</span>
+        }
+
+    }
+    
+    /**
+     * create a new Certification
+     * @param course 
+     * @param student
+     * @return the new certificate
+     */
+    public Certification createCertification(Course course, Student student)
+    {
+        
+<span class="fc" id="L57">        ProjectService p = new ProjectService(em);</span>
+<span class="fc" id="L58">        List&lt;Project&gt; projects = p.findProjectByCourse(course);</span>
+<span class="fc" id="L59">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L60">        tx.begin();</span>
+<span class="pc bpc" id="L61" title="1 of 2 branches missed.">        if(projects.size()&lt;3)</span>
+        {
+<span class="nc" id="L63">            tx.rollback();</span>
+<span class="nc" id="L64">            return null;</span>
+        }
+<span class="fc bfc" id="L66" title="All 2 branches covered.">        for(int i=0; i&lt;3; i++)</span>
+        {
+            Grade grade;
+<span class="fc" id="L69">            grade = (Grade) em.createQuery(&quot;select g from Grade g where g.student.person_id =:person_id and g.project.project_id =:project_id&quot;).setParameter(&quot;person_id&quot;, student.getPerson_id()).setParameter(&quot;project_id&quot;, projects.get(i).getProject_id()).getSingleResult();</span>
+<span class="pc bpc" id="L70" title="1 of 2 branches missed.">            if(grade.getScore()&lt;5)</span>
+            {
+<span class="nc" id="L72">                tx.rollback();</span>
+<span class="nc" id="L73">                return null;</span>
+            }
+        }
+<span class="fc" id="L76">        Certification certificate = new Certification();</span>
+<span class="fc" id="L77">        certificate.setStudent(student);</span>
+<span class="fc" id="L78">        certificate.setCourse(course);</span>
+<span class="fc" id="L79">        student.addCertification(certificate);</span>
+<span class="fc" id="L80">        em.persist(certificate);</span>
+<span class="fc" id="L81">        em.merge(student);</span>
+<span class="fc" id="L82">        tx.commit();</span>
+<span class="fc" id="L83">        return certificate;</span>
+    }
+    
+    /**
+     *
+     * @param studentId
+     * @return
+     */
+    public List&lt;Certification&gt; findCertificationsByStudentId(int studentId)
+    {
+<span class="fc" id="L93">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L94">        tx.begin();</span>
+<span class="fc" id="L95">        List&lt;Certification&gt; listCertifications = null;</span>
+<span class="fc" id="L96">        listCertifications = em.createQuery(&quot;select c from Certification c where c.student.person_id =:person_id&quot;).setParameter(&quot;person_id&quot;, studentId).getResultList();</span>
+<span class="pc bpc" id="L97" title="1 of 2 branches missed.">        if(listCertifications == null)</span>
+        {
+<span class="nc" id="L99">            tx.rollback();</span>
+<span class="nc" id="L100">            return null;</span>
+        }
+        else
+        {
+<span class="fc" id="L104">            tx.commit();</span>
+<span class="fc" id="L105">            return listCertifications;</span>
+        }
+    }
+    
+    /**
+     *
+     * @param studentId
+     * @param courseId
+     * @return
+     */
+    public Certification findCertificationsByStudentIdandCourseId(int studentId, int courseId)
+    {
+<span class="fc" id="L117">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L118">        tx.begin();</span>
+<span class="fc" id="L119">        Certification certification = null;</span>
+<span class="fc" id="L120">        certification = (Certification) em.createQuery(&quot;select c from Certification c where c.student.person_id =:person_id and c.course.course_id=:course_id&quot;).setParameter(&quot;person_id&quot;, studentId).setParameter(&quot;course_id&quot;, courseId).getSingleResult();</span>
+<span class="pc bpc" id="L121" title="1 of 2 branches missed.">        if(certification == null)</span>
+        {
+<span class="nc" id="L123">            tx.rollback();</span>
+<span class="nc" id="L124">            return null;</span>
+        }
+        else
+        {
+<span class="fc" id="L128">            tx.commit();</span>
+<span class="fc" id="L129">            return certification;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

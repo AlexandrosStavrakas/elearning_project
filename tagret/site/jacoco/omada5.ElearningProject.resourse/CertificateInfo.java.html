@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>CertificateInfo.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ElearningProject</a> &gt; <a href="index.source.html" class="el_package">omada5.ElearningProject.resourse</a> &gt; <span class="el_source">CertificateInfo.java</span></div><h1>CertificateInfo.java</h1><pre class="source lang-java linenums">package omada5.ElearningProject.resourse;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import omada5.ElearningProject.domain.*;
+
+/**
+ *
+ * @author thegr
+ */
+@XmlRootElement
+public class CertificateInfo 
+{
+    private int cert_id;
+
+    private int student_id;
+
+    private int course_id;
+    
+    /**
+     *
+     */
+<span class="fc" id="L27">    public CertificateInfo(){}</span>
+    
+    /**
+     *
+     * @param cert_id
+     * @param student_id
+     * @param course_id
+     */
+    public CertificateInfo(int cert_id, int student_id, int course_id) 
+    {
+<span class="nc" id="L37">        this(student_id, course_id);</span>
+<span class="nc" id="L38">        this.cert_id = cert_id;</span>
+
+<span class="nc" id="L40">    }</span>
+
+    /**
+     *
+     * @param student_id
+     * @param course_id
+     */
+    public CertificateInfo(int student_id, int course_id) 
+<span class="nc" id="L48">    {</span>
+        //super();
+<span class="nc" id="L50">        this.student_id = student_id;            </span>
+<span class="nc" id="L51">        this.course_id = course_id;</span>
+<span class="nc" id="L52">    }</span>
+    
+    /**
+     *
+     * @param c
+     */
+    public CertificateInfo(Certification c)
+<span class="fc" id="L59">    {</span>
+<span class="fc" id="L60">        cert_id = c.getCert_id();</span>
+<span class="fc" id="L61">        student_id = c.getStudent().getPerson_id();</span>
+<span class="fc" id="L62">        course_id = c.getCourse().getCourse_id();</span>
+<span class="fc" id="L63">    }</span>
+        
+    /**
+     *
+     * @return
+     */
+    public int getCert_id() 
+    {
+<span class="fc" id="L71">        return this.cert_id;</span>
+    }
+    
+    /**
+     *
+     * @param cert_id
+     */
+    public void setCert_id(int cert_id)
+    {
+<span class="fc" id="L80">    	this.cert_id = cert_id;</span>
+<span class="fc" id="L81">    }</span>
+   
+    /**
+     *
+     * @return
+     */
+    public int getStudentId() 
+    {
+<span class="fc" id="L89">        return this.student_id;</span>
+    }
+  
+    /**
+     *
+     * @param student_id
+     */
+    public void setStudentId(int student_id) 
+    {
+<span class="fc" id="L98">        this.student_id = student_id;</span>
+<span class="fc" id="L99">    }</span>
+    
+    /**
+     *
+     * @return
+     */
+    public int getCourseId() 
+    {
+<span class="fc" id="L107">        return this.course_id;</span>
+    }
+
+    /**
+     *
+     * @param course_id
+     */
+    public void setCourseId(int course_id) 
+    {
+<span class="fc" id="L116">        this.course_id = course_id;</span>
+<span class="fc" id="L117">    }</span>
+    
+    /**
+     *
+     * @param c
+     * @return
+     */
+    public static CertificateInfo wrap(Certification c) 
+    {
+<span class="fc" id="L126">        return new CertificateInfo(c);</span>
+    }
+
+    /**
+     *
+     * @param certifications
+     * @return
+     */
+    public static List&lt;CertificateInfo&gt; wrap(List&lt;Certification&gt; certifications) 
+    {
+<span class="fc" id="L136">        List&lt;CertificateInfo&gt; certInfoList = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">        for (Certification c : certifications) </span>
+        {
+<span class="fc" id="L139">                certInfoList.add(new CertificateInfo(c));</span>
+<span class="fc" id="L140">        }</span>
+<span class="fc" id="L141">        return certInfoList;</span>
+    }
+
+    /**
+     *
+     * @param em
+     * @return
+     */
+    public Certification getCertification(EntityManager em) 
+    {
+        Certification certificate;
+
+<span class="pc bpc" id="L153" title="1 of 2 branches missed.">        if (cert_id &gt; 0) </span>
+        {
+<span class="nc" id="L155">            certificate = em.find(Certification.class, cert_id);</span>
+        } 
+        else 
+        {
+<span class="fc" id="L159">            certificate = new Certification();</span>
+<span class="pc bpc" id="L160" title="1 of 2 branches missed.">            if(course_id &gt; 0)</span>
+            {
+<span class="fc" id="L162">                Course course = em.getReference(Course.class, course_id);</span>
+<span class="fc" id="L163">                certificate.setCourse(course);</span>
+            }
+<span class="pc bpc" id="L165" title="1 of 2 branches missed.">            if(student_id &gt; 0)</span>
+            {
+<span class="fc" id="L167">                Student student = em.getReference(Student.class, student_id);</span>
+<span class="fc" id="L168">                certificate.setStudent(student);</span>
+            }
+        }  	
+<span class="fc" id="L171">        return certificate;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

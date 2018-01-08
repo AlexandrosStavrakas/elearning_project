@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Course.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ElearningProject</a> &gt; <a href="index.source.html" class="el_package">omada5.ElearningProject.domain</a> &gt; <span class="el_source">Course.java</span></div><h1>Course.java</h1><pre class="source lang-java linenums">package omada5.ElearningProject.domain;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.*;
+
+/**
+ * The Course class
+ * @author thegr
+ */
+@Entity
+@Table(name = &quot;Courses&quot;)
+public class Course implements Serializable 
+{
+    @Id
+    @Column(name = &quot;Course_id&quot;)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int course_id;   
+
+    @Column(name = &quot;Title&quot;, length=200, nullable=false)
+    private String title; 
+
+    @Column(name = &quot;Description&quot;, length=200, nullable=false)
+    private String description;
+
+    @Column(name = &quot;Field&quot;, length=200, nullable=false)
+    private String field;
+	
+    @Column(name = &quot;University_Course_Id&quot;, nullable=false, unique=true)
+    private String uniCourseId;
+
+<span class="fc" id="L33">    @OneToMany(orphanRemoval=true,cascade = CascadeType.ALL, mappedBy=&quot;course&quot;, fetch=FetchType.LAZY)</span>
+    private List&lt;Project&gt; projects = new ArrayList&lt;Project&gt;();
+
+<span class="fc" id="L36">    @OneToMany(orphanRemoval=true,cascade = CascadeType.ALL, mappedBy=&quot;course&quot;, fetch=FetchType.LAZY)</span>
+    private List&lt;Material&gt; materials = new ArrayList&lt;Material&gt;();
+
+    @ManyToOne(fetch=FetchType.EAGER,cascade = CascadeType.ALL) 
+    @JoinColumn(name=&quot;teacherid&quot;)
+    private Teacher teacher;
+
+<span class="fc" id="L43">    @ManyToMany(mappedBy=&quot;courses&quot;,fetch=FetchType.LAZY, cascade = CascadeType.ALL)</span>
+    private List&lt;Student&gt; students = new ArrayList&lt;Student&gt;();
+    
+    @ManyToOne(fetch=FetchType.EAGER,cascade = CascadeType.ALL)
+    @JoinColumn(name=&quot;universityid&quot;)
+    private University university;
+
+    /**
+     * Default constructor for Course
+     */
+<span class="fc" id="L53">    public Course(){}</span>
+    
+    /**
+     * A constructor for course
+     * @param title
+     * @param description
+     * @param field
+     * @param uniCourseId
+     */
+    public Course(String title, String description, String field, String uniCourseId)
+<span class="fc" id="L63">    {</span>
+<span class="fc" id="L64">        this.title = title;</span>
+<span class="fc" id="L65">        this.description = description;</span>
+<span class="fc" id="L66">        this.field = field;</span>
+<span class="fc" id="L67">        this.uniCourseId = uniCourseId;</span>
+<span class="fc" id="L68">    }</span>
+
+    /**
+     * returns the course Id
+     * @return course_id
+     */
+    public int getCourse_id() 
+    {
+<span class="fc" id="L76">        return this.course_id;</span>
+    }
+    
+    /**
+     * sets the course_id
+     * @param course_id the id of the course
+     */
+    public void setCourse_id(int course_id) 
+    {
+<span class="nc" id="L85">        this.course_id = course_id;</span>
+<span class="nc" id="L86">    }</span>
+    
+    /**
+     * returns the title of the course
+     * @return title
+     */
+    public String getTitle() 
+    {
+<span class="fc" id="L94">        return this.title;</span>
+    }
+
+    /**
+     * sets a title for the course
+     * @param title is the title of the course
+     */
+    public void setTitle(String title) 
+    {
+<span class="fc" id="L103">        this.title = title;</span>
+<span class="fc" id="L104">    }</span>
+
+    /**
+     * returns the course description
+     * @return description
+     */
+    public String getDescription() 
+    {
+<span class="fc" id="L112">        return this.description;</span>
+    }
+
+    /**
+     * sets the description of the course
+     * @param description is the description of the course
+     */
+    public void setDescription(String description) 
+    {
+<span class="fc" id="L121">        this.description = description;</span>
+<span class="fc" id="L122">    }</span>
+
+    /**
+     * returns the scientific field of the course
+     * @return field 
+     */
+    public String getField() 
+    {
+<span class="fc" id="L130">        return this.field;</span>
+    }
+
+    /**
+     * sets the scientific field of the course
+     * @param field is the field of the course
+     */
+    public void setField(String field) 
+    {
+<span class="fc" id="L139">        this.field = field;</span>
+<span class="fc" id="L140">    }</span>
+
+    /**
+     * returns a list with the projects of the course
+     * @return projects
+     */
+    public List&lt;Project&gt; getProjects() 
+    {
+<span class="fc" id="L148">        return this.projects;</span>
+    }
+
+    /**
+     * sets a list with the projects of the course
+     * @param projects the projects the course has
+     */
+    public void setProjects(List&lt;Project&gt; projects) 
+    {
+<span class="nc" id="L157">        this.projects = projects;</span>
+<span class="nc" id="L158">    }</span>
+
+    /**
+     * returns a list with the materials of the course
+     * @return materials
+     */
+    public List&lt;Material&gt; getMaterials() 
+    {
+<span class="nc" id="L166">        return this.materials;</span>
+    }
+
+    /**
+     * sets the materials of the course
+     * @param materials the materials the course has
+     */
+    public void setMaterials(List&lt;Material&gt; materials) 
+    {
+<span class="nc" id="L175">        this.materials = materials;</span>
+<span class="nc" id="L176">    }</span>
+
+    /**
+     * returns a set of students who attend this course
+     * @return students
+     */
+    public List&lt;Student&gt; getStudents() 
+    {
+<span class="nc" id="L184">        return this.students;</span>
+    }
+
+    /**
+     * sets a set of students who attend this course
+     * @param students the students who attend the course
+     */
+    public void setStudents(List&lt;Student&gt; students) 
+    {
+<span class="nc" id="L193">        this.students = students;</span>
+<span class="nc" id="L194">    }</span>
+
+    /**
+     * returns the teacher of the course
+     * @return teacher
+     */
+    public Teacher getTeacher() 
+    {
+<span class="fc" id="L202">        return this.teacher;</span>
+    }
+
+    /**
+     * sets the teacher of the course
+     * @param teacher the teacher who teaches the course
+     */
+    public void setTeacher(Teacher teacher) 
+    {
+<span class="fc" id="L211">        this.teacher = teacher;</span>
+<span class="fc" id="L212">    }</span>
+    
+    /**
+     * returns the university course Id
+     * @return uniCourseId
+     */
+    public String getUniCourseId() 
+    {
+<span class="fc" id="L220">        return this.uniCourseId;</span>
+    }
+
+    /**
+     * sets the university course Id
+     * @param uniCourseId the university code of the course
+     */
+    public void setUniCourseId(String uniCourseId) 
+    {
+<span class="fc" id="L229">        this.uniCourseId = uniCourseId;</span>
+<span class="fc" id="L230">    }</span>
+    
+    /**
+     * returns the university in which the course belongs
+     * @return university
+     */
+    public University getUniversity() 
+    {
+<span class="fc" id="L238">        return this.university;</span>
+    }
+
+    /**
+     * sets the university in which the course belongs
+     * @param university the university the course belongs to
+     */
+    public void setUniversity(University university) 
+    {
+<span class="fc" id="L247">        this.university = university;</span>
+<span class="fc" id="L248">    }</span>
+    
+    /**
+     * adds a new project to courses project list
+     * @param project the project which added to the course
+     */
+    public void addProject(Project project) 
+    {
+<span class="fc" id="L256">        projects.add(project);</span>
+<span class="fc" id="L257">    }</span>
+    
+    /**
+     * removes an existing project from the project course list
+     * @param project the project which removed from the course
+     */
+    public void removeProject(Project project)
+    {
+<span class="fc" id="L265">        projects.remove(project);</span>
+<span class="fc" id="L266">    }</span>
+    
+    /**
+     * adds a material to the material course list
+     * @param material the material which added to the course
+     */
+    public void addMaterial(Material material) 
+    {
+<span class="fc" id="L274">        materials.add(material);</span>
+<span class="fc" id="L275">    }</span>
+    
+    /**
+     * removes an existing material from the material course list
+     * @param material the material which removed from the course
+     */
+    public void removeMaterial(Material material)
+    {
+<span class="fc" id="L283">        materials.remove(material);</span>
+<span class="fc" id="L284">    }</span>
+    
+    /**
+     * adds a student to the students course list
+     * @param student
+     */
+    void addStudents(Student student) 
+    {
+<span class="pc bpc" id="L292" title="1 of 2 branches missed.">        if (student != null) </span>
+        {
+<span class="fc" id="L294">            student.getCourses().add(this);</span>
+<span class="fc" id="L295">            this.students.add(student);</span>
+        }
+<span class="fc" id="L297">    }</span>
+
+    /**
+     * removes a student from the students course list
+     * @param student
+     */
+    void removeStudent(Student student) 
+    {
+<span class="pc bpc" id="L305" title="1 of 2 branches missed.">        if (student != null) </span>
+        {
+<span class="fc" id="L307">            student.getCourses().remove(this);</span>
+<span class="fc" id="L308">            this.students.remove(student);</span>
+        }
+<span class="fc" id="L310">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

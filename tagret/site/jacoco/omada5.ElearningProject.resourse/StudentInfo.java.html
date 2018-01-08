@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>StudentInfo.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ElearningProject</a> &gt; <a href="index.source.html" class="el_package">omada5.ElearningProject.resourse</a> &gt; <span class="el_source">StudentInfo.java</span></div><h1>StudentInfo.java</h1><pre class="source lang-java linenums">/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package omada5.ElearningProject.resourse;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import omada5.ElearningProject.domain.*;
+/**
+ *
+ * @author thegr
+ */
+
+@XmlRootElement
+public class StudentInfo 
+{
+    private Integer person_id;
+
+    private String name;
+
+    private String surname;
+
+    private String email;
+    
+    private String password;
+
+    /**
+     *
+     */
+<span class="fc" id="L36">    public StudentInfo(){}</span>
+    
+    /**
+     *
+     * @param student
+     */
+    public StudentInfo(Student student) 
+<span class="fc" id="L43">    {</span>
+<span class="fc" id="L44">        person_id = student.getPerson_id();</span>
+<span class="fc" id="L45">        name = student.getName();</span>
+<span class="fc" id="L46">        surname = student.getSurname();</span>
+<span class="fc" id="L47">        email = student.getEmail();</span>
+<span class="fc" id="L48">        password = student.getPassword();</span>
+<span class="fc" id="L49">    }</span>
+
+    /**
+     *
+     * @return
+     */
+    public int getPerson_id() 
+    {
+<span class="fc" id="L57">        return this.person_id;</span>
+    }
+    
+    /**
+     *
+     * @param person_id
+     */
+    public void setPerson_id(int person_id) 
+    {
+<span class="fc" id="L66">        this.person_id = person_id;</span>
+<span class="fc" id="L67">    }</span>
+
+    /**
+     *
+     * @return
+     */
+    public String getName() 
+    {
+<span class="fc" id="L75">        return this.name;</span>
+    }
+
+    /**
+     * sets a name to a Person
+     * @param name 
+     */
+    public void setName(String name) 
+    {
+<span class="fc" id="L84">        this.name = name;</span>
+<span class="fc" id="L85">    }</span>
+
+    /**
+     * returns the Surname of a Person
+     * @return surname
+     */
+    public String getSurname() 
+    {
+<span class="fc" id="L93">        return this.surname;</span>
+    }
+
+    /**
+     * sets a Surname to a Person
+     * @param surname
+     */
+    public void setSurname(String surname) 
+    {
+<span class="fc" id="L102">        this.surname = surname;</span>
+<span class="fc" id="L103">    }</span>
+
+    /**
+     * returns the email of a Person
+     * @return email
+     */
+    public String getEmail() 
+    {
+<span class="fc" id="L111">        return this.email;</span>
+    }
+
+    /**
+     * sets an email to a Person
+     * @param email
+     */
+    public void setEmail(String email) 
+    {
+<span class="fc" id="L120">        this.email = email;</span>
+<span class="fc" id="L121">    }</span>
+
+    /**
+     * returns the password of Person
+     * @return password
+     */
+    public String getPassword() 
+    {
+<span class="fc" id="L129">        return this.password;</span>
+    }
+
+    /**
+     * sets a password for a Person
+     * @param password
+     */
+    public void setPassword(String password) 
+    {
+<span class="fc" id="L138">        this.password = password;</span>
+<span class="fc" id="L139">    }</span>
+    
+    /**
+     *
+     * @param t
+     * @return
+     */
+    public static StudentInfo wrap(Student t) 
+    {
+<span class="fc" id="L148">        return new StudentInfo(t);</span>
+    }
+
+    /**
+     *
+     * @param students
+     * @return
+     */
+    public static List&lt;StudentInfo&gt; wrap(List&lt;Student&gt; students) 
+    {
+<span class="nc" id="L158">        List&lt;StudentInfo&gt; studentInfoList = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L159" title="All 2 branches missed.">        for (Student t : students) </span>
+        {
+<span class="nc" id="L161">                studentInfoList.add(new StudentInfo(t));</span>
+<span class="nc" id="L162">        }</span>
+<span class="nc" id="L163">        return studentInfoList;</span>
+    }
+
+    /**
+     *
+     * @param em
+     * @return
+     */
+    public Student getStudent(EntityManager em) 
+    {
+        Student student;
+
+<span class="nc bnc" id="L175" title="All 2 branches missed.">        if (person_id &gt; 0) </span>
+        {
+<span class="nc" id="L177">            student = em.find(Student.class, person_id);</span>
+        } 
+        else 
+        {
+<span class="nc" id="L181">            student = new Student();</span>
+        }
+
+<span class="nc" id="L184">        student.setName(name);</span>
+<span class="nc" id="L185">        student.setSurname(surname);</span>
+<span class="nc" id="L186">        student.setEmail(email);</span>
+<span class="nc" id="L187">        student.setPassword(password);</span>
+
+<span class="nc" id="L189">        return student;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>UniversityService.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ElearningProject</a> &gt; <a href="index.source.html" class="el_package">omada5.ElearningProject.service</a> &gt; <span class="el_source">UniversityService.java</span></div><h1>UniversityService.java</h1><pre class="source lang-java linenums">package omada5.ElearningProject.service;
+
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.EntityTransaction;
+
+import omada5.ElearningProject.domain.*;
+import omada5.ElearningProject.persistence.JPAUtil;
+
+/**
+ * The UniversityService Class
+ * @author thegr
+ */
+public class UniversityService 
+{
+    final private EntityManager em;
+    
+    /**
+     * sets the entity manager for the service
+     * @param em
+     */
+    public UniversityService(EntityManager em) 
+<span class="fc" id="L24">    {</span>
+<span class="fc" id="L25">        this.em = em;</span>
+<span class="fc" id="L26">    }</span>
+    
+    /**
+     * gets the current entity manager from the JPAUtil class
+     */
+    public UniversityService() 
+<span class="nc" id="L32">    {</span>
+<span class="nc" id="L33">            em = JPAUtil.getCurrentEntityManager();</span>
+<span class="nc" id="L34">    }</span>
+
+    /**
+     * creates a new University from name and mail
+     * @param name
+     * @param mail
+     * @return newUniversity
+     */
+    public University createUniversity(String name, String mail)
+    {	
+<span class="fc" id="L44">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L45">        tx.begin();</span>
+<span class="pc bpc" id="L46" title="2 of 4 branches missed.">        if (name == null || mail == null)</span>
+        {
+<span class="nc" id="L48">            tx.rollback();</span>
+<span class="nc" id="L49">            return null;</span>
+        }
+<span class="fc" id="L51">        University newUniversity = new University(name, mail);</span>
+<span class="fc" id="L52">        em.persist(newUniversity);</span>
+<span class="fc" id="L53">        tx.commit();</span>
+<span class="fc" id="L54">        return newUniversity;</span>
+    }
+    
+    /**
+     * returns a List from University with the specific name
+     * @param name
+     * @return results
+     */
+    public List&lt;University&gt; findUniversityByName(String name) 
+    {
+<span class="fc" id="L64">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L65">        tx.begin();</span>
+        List&lt;University&gt; results;
+<span class="fc" id="L67">        results = em.createQuery(&quot;select u from University u where u.name like :name&quot;).setParameter(&quot;name&quot;, &quot;%&quot; + name + &quot;%&quot;).getResultList();</span>
+<span class="fc" id="L68">        tx.commit();</span>
+<span class="fc" id="L69">        return results;</span>
+    }
+
+    /**
+     * returns a List with all created Universities
+     * @return results
+     */
+    public List&lt;University&gt; findAllUniversities() 
+    {
+<span class="fc" id="L78">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L79">        tx.begin();</span>
+<span class="fc" id="L80">        List&lt;University&gt; results = em.createQuery(&quot;Select u FROM University u&quot;).getResultList();</span>
+<span class="pc bpc" id="L81" title="1 of 2 branches missed.">        if(results == null)</span>
+        {
+<span class="nc" id="L83">            tx.rollback();</span>
+<span class="nc" id="L84">            return null;</span>
+        }
+        else
+        {
+<span class="fc" id="L88">            tx.commit();</span>
+<span class="fc" id="L89">            return results;</span>
+        }
+    }
+    
+    /**
+     * deletes a University
+     * @param email
+     * @return true if the deletion done
+     */
+    public boolean deleteUniversityFromEmail(String email) 
+    {
+<span class="fc" id="L100">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L101">        tx.begin();</span>
+        try 
+        {
+<span class="fc" id="L104">            University uni = (University) em.createQuery(&quot;select u from University u where u.email =:email&quot;).setParameter(&quot;email&quot;, email).getSingleResult();</span>
+<span class="fc" id="L105">            uni.setUni_Admin(null);</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">            for(int i = 0; i &lt; uni.getCourses().size(); i++)</span>
+            {
+<span class="fc" id="L108">                uni.getCourses().get(i).setUniversity(null);</span>
+<span class="fc" id="L109">                em.merge(uni.getCourses().get(i));</span>
+            }
+<span class="fc" id="L111">            uni.getCourses().clear();</span>
+<span class="fc" id="L112">            em.remove(uni);</span>
+        }
+<span class="nc" id="L114">        catch (EntityNotFoundException e) </span>
+        {
+<span class="nc" id="L116">            tx.rollback();</span>
+<span class="nc" id="L117">            return false;</span>
+<span class="fc" id="L118">        }</span>
+<span class="fc" id="L119">        tx.commit();</span>
+<span class="fc" id="L120">        return true;</span>
+    }
+    
+    /**
+     * updates a university
+     * @param id
+     * @param name
+     * @param mail
+     * @return true if it is updated of false if it is not
+     */
+    public boolean saveOrUpdateUniversity(int id,String name, String mail) 
+    {
+<span class="fc" id="L132">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L133">        tx.begin();</span>
+        List&lt;University&gt; unis;
+<span class="fc" id="L135">        unis = em.createQuery(&quot;select u from University u&quot;).getResultList();</span>
+<span class="pc bpc" id="L136" title="1 of 2 branches missed.">        for(University uni: unis)</span>
+        {
+<span class="pc bpc" id="L138" title="1 of 2 branches missed.">            if(uni.getUni_id()==id)</span>
+            {
+<span class="pc bpc" id="L140" title="1 of 2 branches missed.">                if(name!=null)</span>
+<span class="fc" id="L141">                    uni.setName(name);</span>
+<span class="pc bpc" id="L142" title="1 of 2 branches missed.">                if(mail!=null)</span>
+<span class="fc" id="L143">                    uni.setEmail(mail);</span>
+<span class="fc" id="L144">                em.merge(uni);</span>
+<span class="fc" id="L145">                tx.commit();</span>
+<span class="fc" id="L146">                return true;</span>
+            }
+<span class="nc" id="L148">        }</span>
+<span class="nc" id="L149">        tx.rollback();</span>
+<span class="nc" id="L150">        return false;</span>
+    }
+    
+    /**
+     * Assigns a person as an administrator for the University 
+     * @param uni
+     * @param uni_admin
+     * @return true if the assignment is fine or false if it is not
+     */
+    public boolean AssignAdminToUni(University uni, Uni_Admin uni_admin)
+    {
+<span class="fc" id="L161">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L162">        tx.begin();</span>
+        try 
+        {
+<span class="fc" id="L165">            uni.setUni_Admin(uni_admin);</span>
+<span class="fc" id="L166">            em.merge(uni);</span>
+        }
+<span class="nc" id="L168">        catch (EntityNotFoundException e) </span>
+        {
+<span class="nc" id="L170">            tx.rollback();</span>
+<span class="nc" id="L171">            return false;</span>
+<span class="fc" id="L172">        }</span>
+<span class="fc" id="L173">        tx.commit();</span>
+<span class="fc" id="L174">        return true;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

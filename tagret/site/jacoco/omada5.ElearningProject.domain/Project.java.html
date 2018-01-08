@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Project.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ElearningProject</a> &gt; <a href="index.source.html" class="el_package">omada5.ElearningProject.domain</a> &gt; <span class="el_source">Project.java</span></div><h1>Project.java</h1><pre class="source lang-java linenums">package omada5.ElearningProject.domain;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+/**
+ * The Project Class
+ * @author thegr
+ */
+@Entity
+@Table(name = &quot;Projects&quot;)
+public class Project implements Serializable 
+{
+    @Id
+    @Column(name = &quot;project_id&quot;)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int project_id;
+
+    @Column(name = &quot;Title&quot;)
+    private String title;
+
+    @Column(name = &quot;Description&quot;)
+    private String description;
+    
+    @ManyToOne(fetch=FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name=&quot;courseId&quot;)
+    private Course course;
+    
+    /**
+     * Default constructor of Project
+     */
+<span class="fc" id="L32">    public Project(){}</span>
+    
+    /**
+     * A constructor of Project
+     * @param title
+     * @param description
+     */
+    public Project(String title, String description)
+<span class="fc" id="L40">    {</span>
+<span class="fc" id="L41">        this.title = title;</span>
+<span class="fc" id="L42">        this.description = description;</span>
+<span class="fc" id="L43">    }</span>
+
+    /**
+     * returns the project Id of the project 
+     * @return project_id
+     */
+    public int getProject_id() 
+    {
+<span class="fc" id="L51">        return this.project_id;</span>
+    }
+    
+    /**
+     *
+     * @param project_id
+     */
+    public void setProject_id(int project_id) 
+    {
+<span class="nc" id="L60">    	this.project_id = project_id;</span>
+<span class="nc" id="L61">    }</span>
+
+    /**
+     * returns the project title
+     * @return title
+     */ 
+    public String getTitle() 
+    {
+<span class="fc" id="L69">        return this.title;</span>
+    }
+
+    /**
+     * sets the title of the project
+     * @param title
+     */
+    public void setTitle(String title) 
+    {
+<span class="fc" id="L78">        this.title = title;</span>
+<span class="fc" id="L79">    }</span>
+
+    /**
+     * returns the description of the project
+     * @return description
+     */
+    public String getDescription() 
+    {
+<span class="fc" id="L87">        return this.description;</span>
+    }
+
+    /**
+     * sets the description of the project
+     * @param description
+     */
+    public void setDescription(String description) 
+    {
+<span class="fc" id="L96">        this.description = description;</span>
+<span class="fc" id="L97">    }</span>
+    
+    /**
+     * returns the course the project belongs
+     * @return course
+     */
+    public Course getCourse() 
+    {
+<span class="fc" id="L105">        return this.course;</span>
+    }
+
+    /**
+     * sets the course the project belongs
+     * @param course
+     */
+    public void setCourse(Course course) 
+    {
+<span class="fc" id="L114">        this.course = course;</span>
+<span class="fc" id="L115">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

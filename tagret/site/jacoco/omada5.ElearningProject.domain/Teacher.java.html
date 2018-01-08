@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Teacher.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ElearningProject</a> &gt; <a href="index.source.html" class="el_package">omada5.ElearningProject.domain</a> &gt; <span class="el_source">Teacher.java</span></div><h1>Teacher.java</h1><pre class="source lang-java linenums">package omada5.ElearningProject.domain;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.*;
+
+/**
+ * The Teacher Class
+ * @author thegr
+ */
+@Entity
+@DiscriminatorValue(&quot;Teacher&quot;)
+public class Teacher extends Person implements Serializable 
+{
+<span class="fc" id="L16">    @OneToMany(orphanRemoval=true,cascade = CascadeType.ALL,mappedBy=&quot;teacher&quot;, fetch=FetchType.LAZY)</span>
+    private List&lt;Course&gt; courses = new ArrayList &lt;Course&gt;();
+
+    /**
+     * A constructor for Teacher
+     * @param name
+     * @param surname
+     * @param email
+     * @param password
+     */
+    public Teacher(String name, String surname, String email, String password) 
+<span class="fc" id="L27">    {</span>
+<span class="fc" id="L28">        super.setName(name);</span>
+<span class="fc" id="L29">        super.setSurname(surname);</span>
+<span class="fc" id="L30">        super.setEmail(email);</span>
+<span class="fc" id="L31">        super.setPassword(password);</span>
+<span class="fc" id="L32">    }</span>
+    
+    /**
+     * Another constructor for Teacher
+     * @param name
+     * @param surname
+     * @param email
+     * @param password
+     * @param courses
+     */
+
+    
+    /**
+    * Default constructor for Teacher 
+    */
+<span class="fc" id="L47">    public Teacher(){}</span>
+    
+    /**
+     * returns the list of teacher courses
+     * @return courses
+     */
+    public List&lt;Course&gt; getCourses() 
+    {
+<span class="fc" id="L55">        return this.courses;</span>
+    }
+
+    /**
+     * sets a list of teacher courses
+     * @param courses
+     */
+    public void setCourses(List&lt;Course&gt; courses) 
+    {
+<span class="nc" id="L64">        this.courses = courses;</span>
+<span class="nc" id="L65">    }</span>
+    
+    /**
+     * Adds a course to teachers courses list
+     * @param course
+     */
+    public void addCourse(Course course)
+    {
+<span class="pc bpc" id="L73" title="1 of 2 branches missed.">        if(course != null)</span>
+<span class="fc" id="L74">            courses.add(course);</span>
+<span class="fc" id="L75">    }</span>
+    
+    /**
+     * Removes a course to teachers courses list
+     * @param course
+     */
+    public void removeCourse(Course course)
+    {
+        //if(course != null)
+<span class="nc" id="L84">            courses.remove(course);</span>
+<span class="nc" id="L85">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

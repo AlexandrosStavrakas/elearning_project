@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>CourseInfo.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ElearningProject</a> &gt; <a href="index.source.html" class="el_package">omada5.ElearningProject.resourse</a> &gt; <span class="el_source">CourseInfo.java</span></div><h1>CourseInfo.java</h1><pre class="source lang-java linenums">package omada5.ElearningProject.resourse;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import omada5.ElearningProject.domain.*;
+/**
+ *
+ * @author thegr
+ */
+
+@XmlRootElement
+public class CourseInfo 
+{
+    private int Course_id;
+
+    private String title;
+
+    private String description;
+
+    private String field;
+    
+    private String University_Course_Id;
+
+    private int teacherid;
+    
+    private int universityid;
+
+    /**
+     *
+     */
+<span class="fc" id="L35">    public CourseInfo(){}</span>
+    
+    /**
+     *
+     * @param Course_id
+     * @param title
+     * @param description
+     * @param field
+     * @param University_Course_Id
+     * @param teacherid
+     * @param universityid
+     */
+    public CourseInfo(int Course_id, String title, String description, String field, String University_Course_Id, int teacherid, int universityid) 
+    {
+<span class="nc" id="L49">        this(title, description, field, University_Course_Id, teacherid, universityid);</span>
+<span class="nc" id="L50">        this.Course_id = Course_id;</span>
+
+<span class="nc" id="L52">    }</span>
+
+    /**
+     *
+     * @param title
+     * @param description
+     * @param field
+     * @param University_Course_Id
+     * @param teacherid
+     * @param universityid
+     */
+    public CourseInfo(String title, String description, String field, String University_Course_Id, int teacherid, int universityid) 
+    {
+<span class="fc" id="L65">        super();</span>
+<span class="fc" id="L66">        this.title = title;</span>
+<span class="fc" id="L67">        this.description = description;</span>
+<span class="fc" id="L68">        this.field = field;</span>
+<span class="fc" id="L69">        this.University_Course_Id = University_Course_Id;</span>
+<span class="fc" id="L70">        this.teacherid = teacherid;            </span>
+<span class="fc" id="L71">        this.universityid = universityid;</span>
+<span class="fc" id="L72">    }</span>
+    
+    /**
+     *
+     * @param title
+     * @param description
+     * @param field
+     * @param University_Course_Id
+     * @param universityid
+     */
+    public CourseInfo(String title, String description, String field, String University_Course_Id, int universityid) 
+    {
+<span class="nc" id="L84">        super();</span>
+<span class="nc" id="L85">        this.title = title;</span>
+<span class="nc" id="L86">        this.description = description;</span>
+<span class="nc" id="L87">        this.field = field;</span>
+<span class="nc" id="L88">        this.University_Course_Id = University_Course_Id;</span>
+<span class="nc" id="L89">        this.universityid = universityid;</span>
+<span class="nc" id="L90">    }</span>
+
+    /**
+     *
+     * @param course
+     */
+    public CourseInfo(Course course) 
+<span class="fc" id="L97">    {</span>
+<span class="fc" id="L98">        Course_id = course.getCourse_id();</span>
+<span class="fc" id="L99">        title = course.getTitle();</span>
+<span class="fc" id="L100">        description = course.getDescription();</span>
+<span class="fc" id="L101">        field = course.getField();</span>
+<span class="fc" id="L102">        University_Course_Id = course.getUniCourseId();</span>
+<span class="fc" id="L103">        teacherid = course.getTeacher().getPerson_id();</span>
+<span class="fc" id="L104">        universityid = course.getUniversity().getUni_id();</span>
+<span class="fc" id="L105">    }</span>
+
+    /**
+     *
+     * @return
+     */
+    public int getCourse_id() 
+    {
+<span class="fc" id="L113">        return Course_id;</span>
+    }
+
+    /**
+     *
+     * @param Course_id
+     */
+    public void setCourse_id(int Course_id) 
+    {
+<span class="fc" id="L122">        this.Course_id = Course_id;</span>
+<span class="fc" id="L123">    }</span>
+
+    /**
+     *
+     * @return
+     */
+    public String getTitle() 
+    {
+<span class="fc" id="L131">        return title;</span>
+    }
+
+    /**
+     *
+     * @param title
+     */
+    public void setTitle(String title) 
+    {
+<span class="fc" id="L140">        this.title = title;</span>
+<span class="fc" id="L141">    }</span>
+
+    /**
+     *
+     * @return
+     */
+    public String getDescription() 
+    {
+<span class="fc" id="L149">        return description;</span>
+    }
+
+    /**
+     *
+     * @param description
+     */
+    public void setDescription(String description) 
+    {
+<span class="fc" id="L158">        this.description = description;</span>
+<span class="fc" id="L159">    }</span>
+
+    /**
+     *
+     * @return
+     */
+    public String getField() 
+    {
+<span class="fc" id="L167">        return field;</span>
+    }
+
+    /**
+     *
+     * @param field
+     */
+    public void setField(String field) 
+    {
+<span class="fc" id="L176">        this.field = field;</span>
+<span class="fc" id="L177">    }</span>
+
+    /**
+     *
+     * @return
+     */
+    public String getUniversity_Course_Id() 
+    {
+<span class="fc" id="L185">        return University_Course_Id;</span>
+    }
+
+    /**
+     *
+     * @param University_Course_Id
+     */
+    public void setUniversity_Course_Id(String University_Course_Id) 
+    {
+<span class="fc" id="L194">        this.University_Course_Id = University_Course_Id;</span>
+<span class="fc" id="L195">    }</span>
+
+    /**
+     *
+     * @return
+     */
+    public int getTeacherId() 
+    {
+<span class="fc" id="L203">        return teacherid;</span>
+    }
+
+    /**
+     *
+     * @param teacherid
+     */
+    public void setTeacherId(int teacherid) 
+    {
+<span class="fc" id="L212">        this.teacherid = teacherid;</span>
+<span class="fc" id="L213">    }</span>
+
+    /**
+     *
+     * @return
+     */
+    public int getUniversityId() 
+    {
+<span class="fc" id="L221">        return universityid;</span>
+    }
+
+    /**
+     *
+     * @param universityid
+     */
+    public void setUniversityId(int universityid) 
+    {
+<span class="fc" id="L230">        this.universityid = universityid;</span>
+<span class="fc" id="L231">    }</span>
+
+    /**
+     *
+     * @param c
+     * @return
+     */
+    public static CourseInfo wrap(Course c) 
+    {
+<span class="fc" id="L240">        return new CourseInfo(c);</span>
+    }
+
+    /**
+     *
+     * @param courses
+     * @return
+     */
+    public static List&lt;CourseInfo&gt; wrap(List&lt;Course&gt; courses) 
+    {
+<span class="fc" id="L250">        List&lt;CourseInfo&gt; courseInfoList = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L251" title="All 2 branches covered.">        for (Course c : courses) </span>
+        {
+<span class="fc" id="L253">                courseInfoList.add(new CourseInfo(c));</span>
+<span class="fc" id="L254">        }</span>
+<span class="fc" id="L255">        return courseInfoList;</span>
+    }
+
+    /**
+     *
+     * @param em
+     * @return
+     */
+    public Course getCourse(EntityManager em) 
+    {
+        Course course;
+
+<span class="fc bfc" id="L267" title="All 2 branches covered.">        if (Course_id &gt; 0) </span>
+        {
+<span class="fc" id="L269">            course = em.find(Course.class, Course_id);</span>
+        } 
+        else 
+        {
+<span class="fc" id="L273">            course = new Course();</span>
+        }
+        //course.setCourse_id(Course_id);
+<span class="fc" id="L276">        course.setTitle(title);</span>
+<span class="fc" id="L277">        course.setDescription(description);</span>
+<span class="fc" id="L278">        course.setField(field);</span>
+<span class="fc" id="L279">        course.setUniCourseId(University_Course_Id);</span>
+
+<span class="pc bpc" id="L281" title="1 of 2 branches missed.">        if(teacherid &gt; 0)</span>
+        {
+<span class="fc" id="L283">            Teacher teacher = em.getReference(Teacher.class, teacherid);</span>
+<span class="fc" id="L284">            course.setTeacher(teacher);</span>
+        }
+<span class="pc bpc" id="L286" title="1 of 2 branches missed.">        if(universityid &gt; 0)</span>
+        {
+<span class="fc" id="L288">                University uni = em.getReference(University.class, universityid);</span>
+<span class="fc" id="L289">                course.setUniversity(uni);</span>
+        }
+<span class="fc" id="L291">        return course;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

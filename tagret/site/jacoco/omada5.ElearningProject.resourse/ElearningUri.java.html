@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>ElearningUri.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ElearningProject</a> &gt; <a href="index.source.html" class="el_package">omada5.ElearningProject.resourse</a> &gt; <span class="el_source">ElearningUri.java</span></div><h1>ElearningUri.java</h1><pre class="source lang-java linenums">package omada5.ElearningProject.resourse;
+
+/**
+ *
+ * @author thegr
+ */
+<span class="nc" id="L7">public class ElearningUri </span>
+{
+
+    /**
+     *
+     */
+    public static final String UNIVERSITIES = &quot;universities&quot;;
+    
+    /**
+     *
+     */
+    public static final String ADMINS = &quot;admins&quot;;
+    
+    /**
+     *
+     */
+    public static final String TEACHERS = &quot;teachers&quot;;
+    
+    /**
+     *
+     */
+    public static final String STUDENTS = &quot;students&quot;;
+    
+    /**
+     *
+     */
+    public static final String COURSES = &quot;courses&quot;;
+    
+    /**
+     *
+     */
+    public static final String MATERIALS = &quot;materials&quot;;
+    
+    /**
+     *
+     */
+    public static final String PROJECTS = &quot;projects&quot;;
+    
+    /**
+     *
+     */
+    public static final String GRADES = &quot;grades&quot;;
+    
+    /**
+     *
+     */
+    public static final String CERTIFICATES = &quot;certificates&quot;;
+    
+    /**
+     *
+     */
+    public static final String COURSE_SEARCH = &quot;courses/search&quot;;
+    
+    /**
+     *
+     */
+    public static final String SET_GRADE_TO_PROJECT = &quot;grades/teachers/courses/projects/students/&quot;;
+    
+    //public static final String REGISTER = &quot;courses/register&quot;;
+    
+    //everybody
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    public static String courseIdUri(String id) 
+    {
+<span class="fc" id="L76">        return COURSES + &quot;/&quot; + id;</span>
+    }
+    
+  //student
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    public static String studentIdUri(String id) 
+    {
+<span class="fc" id="L88">        return STUDENTS + &quot;/&quot; + id;</span>
+    }
+    
+    /**
+     *
+     * @param cid
+     * @param sid
+     * @return
+     */
+    public static final String register(String cid, String sid)
+    {
+<span class="fc" id="L99">    	return &quot;courses/&quot; + cid + &quot;/students/&quot; + sid + &quot;/register/&quot;;</span>
+    }
+    
+    /**
+     *
+     * @param cid
+     * @param sid
+     * @return
+     */
+    public static final String unregister(String cid, String sid)
+    {
+<span class="fc" id="L110">    	return &quot;courses/&quot; + cid + &quot;/students/&quot; + sid + &quot;/unregister/&quot;;</span>
+    }
+    
+    //everybody
+
+    /**
+     *
+     * @param title
+     * @return
+     */
+    public static String courseSearchUri(String title) 
+    {
+<span class="nc" id="L122">        return COURSE_SEARCH + &quot;?title=&quot; + title;</span>
+    }
+    
+    //everybody
+
+    /**
+     *
+     * @param surname
+     * @return
+     */
+    public static String courseSearchTeacherUri(String surname) 
+    {
+<span class="nc" id="L134">        return COURSE_SEARCH_TEACHER + &quot;?teacher=&quot; + surname;</span>
+	}
+    
+    /**
+     *
+     */
+    public static final String COURSE_SEARCH_TEACHER = &quot;courses/searchTeacher&quot;;
+    
+    //loged in as student
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    public static String courseSearchStudentUri(String id) 
+    {
+<span class="fc" id="L151">        return COURSES + &quot;/&quot; + STUDENTS + &quot;/&quot; + id;</span>
+    }
+    
+    //loged in as student
+
+    /**
+     *
+     * @param cid
+     * @param sid
+     * @return
+     */
+    public static String CourseIdStudentIdUri(String cid, String sid) 
+    {
+<span class="nc" id="L164">        return COURSES + &quot;/&quot; + cid + &quot;/&quot; + STUDENTS + &quot;/&quot; + sid;</span>
+    }
+    
+    
+  //loged in as student
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    public static String certificateByStudentIdUri(String id) 
+    {
+<span class="fc" id="L177">        return CERTIFICATES + &quot;/&quot; + STUDENTS + &quot;/&quot; + id;</span>
+    }
+    
+  //loged in as student
+
+    /**
+     *
+     * @param sid
+     * @param cid
+     * @return
+     */
+    public static String certificateByStudentIdAndCourseIdUri(String sid, String cid) 
+    {
+<span class="fc" id="L190">        return CERTIFICATES + &quot;/&quot; + STUDENTS + &quot;/&quot; + sid + &quot;/&quot; + COURSES + &quot;/&quot; + cid;</span>
+    }
+
+    //logged in as admin
+
+    /**
+     *
+     * @param cid
+     * @param aid
+     * @return
+     */
+    public static String courseIdAdminId(String cid, String aid)
+    {
+<span class="fc" id="L203">    	return &quot;courses/&quot; + cid + &quot;/admins/&quot; + aid + &quot;/&quot;;</span>
+    }
+    
+    /**
+     *
+     * @param id
+     * @return
+     */
+    public static String courseProjectUri(String id) 
+    {
+<span class="fc" id="L213">        return COURSES + &quot;/&quot; + id + &quot;/projects&quot;;</span>
+    }
+    
+    /**
+     *
+     * @param id
+     * @return
+     */
+    public static String courseMaterialUri(String id) 
+    {
+<span class="fc" id="L223">        return COURSES + &quot;/&quot; + id + &quot;/materials&quot;;</span>
+    }
+    
+    /**
+     *
+     * @return
+     */
+    public static String selectProjectIdTeacher()
+    {
+<span class="nc" id="L232">    	return GRADES + &quot;/&quot; + TEACHERS + &quot;/&quot; + &quot;/&quot; + COURSES + &quot;/&quot; + &quot;/&quot; + PROJECTS + STUDENTS +&quot;/&quot;;</span>
+    }
+    
+    /**
+     *
+     * @param cid
+     * @param pid
+     * @return
+     */
+    public static String courseProjectsGrades(String cid, String pid)
+    {
+    	//return &quot;courses/&quot;+cid+&quot;/projects/&quot;+pid+&quot;/students/&quot;;
+<span class="fc" id="L244">    	return COURSES+&quot;/&quot; + cid + &quot;/&quot; + PROJECTS + &quot;/&quot; + pid + &quot;/&quot; + STUDENTS;</span>
+    }
+    
+    /**
+     *
+     * @param cid
+     * @return
+     */
+    public static String CourseIdProjectIdUri(String cid) 
+    {
+<span class="fc" id="L254">        return COURSES + &quot;/&quot; + cid + &quot;/&quot; + PROJECTS + &quot;/create&quot;;</span>
+    }
+    
+    /**
+     *
+     * @param cid
+     * @param pid
+     * @return
+     */
+    public static String CourseIdProjectIdUriUpdate(String cid, String pid) 
+    {
+<span class="fc" id="L265">        return COURSES + &quot;/&quot; + cid + &quot;/&quot; + PROJECTS + &quot;/&quot; + pid;</span>
+    }
+    
+    /**
+     *
+     * @param cid
+     * @param pid
+     * @return
+     */
+    public static String CourseIdProjectIdUriDelete(String cid, String pid) 
+    {
+<span class="fc" id="L276">        return COURSES + &quot;/&quot; + cid + &quot;/&quot; + PROJECTS + &quot;/&quot; + pid + &quot;/delete&quot;;</span>
+    }
+    
+    /**
+     *
+     * @param cid
+     * @return
+     */
+    public static String CourseIdMaterialIdUri(String cid) 
+    {
+<span class="fc" id="L286">        return COURSES + &quot;/&quot; + cid + &quot;/&quot; + MATERIALS + &quot;/create&quot;;</span>
+    }
+    
+    /**
+     *
+     * @param cid
+     * @param mid
+     * @return
+     */
+    public static String CourseIdMaterialIdUriUpdate(String cid, String mid) 
+    {
+<span class="fc" id="L297">        return COURSES + &quot;/&quot; + cid + &quot;/&quot; + MATERIALS + &quot;/&quot; + mid;</span>
+    }
+    
+    /**
+     *
+     * @param cid
+     * @param mid
+     * @return
+     */
+    public static String CourseIdMaterialIdUriDelete(String cid, String mid) 
+    {
+<span class="fc" id="L308">        return COURSES + &quot;/&quot; + cid + &quot;/&quot; + MATERIALS + &quot;/&quot; + mid + &quot;/delete&quot;;</span>
+    }
+    /*
+    /{courseId:[0-9]*}/projects/{projectId:[0-9]*}
+    
+    
+    
+    public static final String COURSE_SEARCH_STUDENT = &quot;courses/searchStudent&quot;;
+    
+        //
+	 //courses/{id}, &lt;br&gt;
+	 // e.g. /courses/1
+	 ///
+	public static String courseIdUri(String id) 
+        {
+            return COURSES + &quot;/&quot; + id;
+	}
+
+	//
+	 //courses?title={title}, &lt;br&gt;
+	 // e.g. /courses?title=JAVA
+	 //
+	
+
+        
+        public static String courseSearchStudentUri(String id) 
+        {
+            return COURSE_SEARCH_STUDENT + &quot;?student=&quot; + id;
+        }
+        
+        public static String teacherUri(String id) 
+        {
+            return TEACHERS + &quot;/&quot; + id;
+	}
+        
+    */
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

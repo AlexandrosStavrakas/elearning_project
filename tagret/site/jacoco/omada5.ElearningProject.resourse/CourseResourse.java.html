@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>CourseResourse.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ElearningProject</a> &gt; <a href="index.source.html" class="el_package">omada5.ElearningProject.resourse</a> &gt; <span class="el_source">CourseResourse.java</span></div><h1>CourseResourse.java</h1><pre class="source lang-java linenums">package omada5.ElearningProject.resourse;
+
+import static omada5.ElearningProject.resourse.ElearningUri.COURSES;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URI;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
+
+import omada5.ElearningProject.domain.*;
+import omada5.ElearningProject.service.*;
+import omada5.ElearningProject.resourse.*;;
+/**
+ *
+ * @author thegr
+ */
+
+@Path(COURSES)
+<span class="fc" id="L36">public class CourseResourse extends AbstractResource</span>
+{
+    @Context 
+    UriInfo uriInfo;
+
+    /**
+     *
+     * @return
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List&lt;CourseInfo&gt; listAllCourses() 
+    {
+<span class="fc" id="L49">        EntityManager em = getEntityManager();</span>
+<span class="fc" id="L50">        CourseService service = new CourseService(em);</span>
+<span class="fc" id="L51">        List&lt;Course&gt; courses = service.findAllCourses();</span>
+<span class="fc" id="L52">        List&lt;CourseInfo&gt; courseInfo = CourseInfo.wrap(courses);</span>
+<span class="fc" id="L53">        em.close();</span>
+<span class="fc" id="L54">        return courseInfo;</span>
+    }
+    
+    /**
+     *
+     * @param courseId
+     * @return
+     */
+    @GET
+    @Path(&quot;{courseId:[0-9]*}&quot;)
+    @Produces(MediaType.APPLICATION_JSON)
+    public CourseInfo getCourseDetails(@PathParam(&quot;courseId&quot;) int courseId) 
+    {
+<span class="fc" id="L67">        EntityManager em = getEntityManager();</span>
+<span class="fc" id="L68">        CourseService courseService = new CourseService(em);</span>
+<span class="fc" id="L69">        Course course = courseService.findCourseById(courseId);</span>
+<span class="fc" id="L70">        CourseInfo courseInfo = CourseInfo.wrap(course);</span>
+<span class="fc" id="L71">        em.close();</span>
+<span class="fc" id="L72">        return courseInfo;</span>
+    }
+    
+    /**
+     *
+     * @param title
+     * @return
+     */
+    @GET
+    @Path(&quot;search&quot;)
+    @Produces(MediaType.APPLICATION_JSON)
+    public List&lt;CourseInfo&gt; searchCourseByTitle(@QueryParam(&quot;title&quot;) String title) 
+    {
+<span class="fc" id="L85">        EntityManager em = getEntityManager();</span>
+<span class="fc" id="L86">        CourseService courseService = new CourseService(em);</span>
+<span class="fc" id="L87">        List&lt;Course&gt; courses = courseService.findCourseByTitle(title);</span>
+<span class="fc" id="L88">        List&lt;CourseInfo&gt; coursesInfo = CourseInfo.wrap(courses);</span>
+<span class="fc" id="L89">        em.close();</span>
+<span class="fc" id="L90">        return coursesInfo;</span>
+    }
+    
+    /**
+     *
+     * @param studentId
+     * @return
+     */
+    @GET
+    @Path(&quot;/students/{studentId:[0-9]*}&quot;)
+    @Produces(MediaType.APPLICATION_JSON)
+    public List&lt;CourseInfo&gt; listAllCoursesByStudent(@PathParam(&quot;studentId&quot;) int studentId)
+    {
+<span class="fc" id="L103">        EntityManager em = getEntityManager();</span>
+<span class="fc" id="L104">        CourseService service = new CourseService(em);</span>
+<span class="fc" id="L105">        List&lt;Course&gt; courses = service.findCoursesByStudent(studentId);</span>
+<span class="fc" id="L106">        List&lt;CourseInfo&gt; courseInfo = CourseInfo.wrap(courses);</span>
+<span class="fc" id="L107">        em.close();</span>
+<span class="fc" id="L108">        return courseInfo;</span>
+    }
+    
+    /**
+     *
+     * @param teacherSurname
+     * @return
+     */
+    @GET
+    @Path(&quot;searchTeacher&quot;)
+    @Produces(MediaType.APPLICATION_JSON)
+    public List&lt;CourseInfo&gt; searchCourseByTeacher(@QueryParam(&quot;teacher&quot;) String teacherSurname) 
+    {
+<span class="fc" id="L121">        EntityManager em = getEntityManager();</span>
+<span class="fc" id="L122">        CourseService courseService = new CourseService(em);</span>
+<span class="fc" id="L123">        List&lt;Course&gt; courses = courseService.findCourseByTeacher(teacherSurname);</span>
+<span class="fc" id="L124">        List&lt;CourseInfo&gt; coursesInfo = CourseInfo.wrap(courses);</span>
+<span class="fc" id="L125">        em.close();</span>
+<span class="fc" id="L126">        return coursesInfo;</span>
+    }
+//////////////////////////////////////admin///////////////////////////
+
+    /**
+     *
+     * @param courseInfo
+     * @return
+     */
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response createCourse(CourseInfo courseInfo) 
+    {
+<span class="fc" id="L139">        EntityManager em = getEntityManager();</span>
+<span class="fc" id="L140">        Course course = courseInfo.getCourse(em);</span>
+<span class="fc" id="L141">        CourseService courseService = new CourseService(em);</span>
+<span class="fc" id="L142">        course = courseService.save(course);</span>
+<span class="fc" id="L143">        UriBuilder ub = uriInfo.getAbsolutePathBuilder();</span>
+<span class="fc" id="L144">        URI newCourseUri = ub.path(Integer.toString(course.getCourse_id())).build();</span>
+<span class="fc" id="L145">        em.close();</span>
+<span class="fc" id="L146">        return Response.created(newCourseUri).build();</span>
+    }
+
+    /**
+     *
+     * @param courseId
+     * @param adminId
+     * @return
+     */
+    @DELETE
+    @Path(&quot;/{courseId:[0-9]*}/admins/{adminId:[0-9]*}/&quot;)
+    public Response deleteCourse(@PathParam(&quot;courseId&quot;) int courseId , @PathParam(&quot;adminId&quot;) int adminId ) 
+    {
+<span class="fc" id="L159">    	EntityManager em = getEntityManager();</span>
+<span class="fc" id="L160">        CourseService service = new CourseService(em);</span>
+<span class="fc" id="L161">        boolean result = service.deleteCourse(courseId);</span>
+<span class="fc bfc" id="L162" title="All 2 branches covered.">        if (!result) </span>
+        {
+<span class="fc" id="L164">            em.close();</span>
+<span class="fc" id="L165">            return Response.status(Status.NOT_FOUND).build();</span>
+        }
+<span class="fc" id="L167">        em.close();</span>
+<span class="fc" id="L168">        return Response.ok().build();</span>
+    }
+
+///////////////////////////////////////////teacher
+
+    /**
+     *
+     * @param courseInfo
+     * @return
+     */
+    @PUT
+    @Path(&quot;{courseId:[0-9]*}&quot;)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateCourse(CourseInfo courseInfo) 
+    {
+<span class="fc" id="L183">        EntityManager em = getEntityManager();</span>
+<span class="fc" id="L184">        Course course = courseInfo.getCourse(em);</span>
+<span class="fc" id="L185">        CourseService courseService = new CourseService(em);</span>
+        //course = 
+<span class="fc" id="L187">        courseService.save(course);</span>
+<span class="fc" id="L188">        em.close();</span>
+<span class="fc" id="L189">        return Response.ok().build();</span>
+    }
+
+    /**
+     *
+     * @param courseId
+     * @return
+     */
+    @GET
+    @Path(&quot;/{courseId:[0-9]*}/projects&quot;)
+    @Produces(MediaType.APPLICATION_JSON)
+    public List&lt;ProjectInfo&gt; getAllProjectSByCourse(@PathParam(&quot;courseId&quot;) int courseId) 
+    {
+<span class="fc" id="L202">        EntityManager em = getEntityManager();</span>
+<span class="fc" id="L203">        CourseService courseService = new CourseService(em);</span>
+<span class="fc" id="L204">        Course course = courseService.findCourseById(courseId);</span>
+<span class="fc" id="L205">        ProjectService projectService = new ProjectService(em);</span>
+<span class="fc" id="L206">        List&lt;Project&gt; projects = projectService.findProjectByCourse(course);</span>
+<span class="fc" id="L207">        List&lt;ProjectInfo&gt; projectInfo = ProjectInfo.wrap(projects);</span>
+<span class="fc" id="L208">        em.close();</span>
+<span class="fc" id="L209">        return projectInfo;</span>
+    }
+    
+    /**
+     *
+     * @param courseId
+     * @return
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
+    @GET
+    @Path(&quot;/{courseId:[0-9]*}/materials&quot;)
+    @Produces(MediaType.APPLICATION_JSON)
+    public List&lt;MaterialInfo&gt; getAllMaterialsSByCourse(@PathParam(&quot;courseId&quot;) int courseId) throws FileNotFoundException, IOException 
+    {
+<span class="fc" id="L224">        EntityManager em = getEntityManager();</span>
+<span class="fc" id="L225">        CourseService courseService = new CourseService(em);</span>
+<span class="fc" id="L226">        Course course = courseService.findCourseById(courseId);</span>
+<span class="fc" id="L227">        MaterialService materialService = new MaterialService(em);</span>
+<span class="fc" id="L228">        List&lt;Material&gt; materials = materialService.findMaterialByCourse(course);</span>
+<span class="fc" id="L229">        List&lt;MaterialInfo&gt; materialInfo = MaterialInfo.wrap(materials);</span>
+<span class="fc" id="L230">        em.close();</span>
+<span class="fc" id="L231">        return materialInfo;</span>
+    }
+    
+    /**
+     *
+     * @param courseId
+     * @param projectId
+     * @return
+     */
+    @GET
+    @Path(&quot;/{courseId:[0-9]*}/projects/{projectId:[0-9]*}/students&quot;)
+    @Produces(MediaType.APPLICATION_JSON)
+    public List&lt;GradeInfo&gt; getProjectDetailsByCourse(@PathParam(&quot;courseId&quot;) int courseId , @PathParam(&quot;projectId&quot;) int projectId) 
+    {
+<span class="fc" id="L245">        EntityManager em = getEntityManager();</span>
+<span class="fc" id="L246">        CourseService courseService = new CourseService(em);</span>
+<span class="fc" id="L247">        Course course = courseService.findCourseById(courseId);</span>
+<span class="fc" id="L248">        ProjectService projectService = new ProjectService(em);</span>
+<span class="fc" id="L249">        List&lt;Project&gt; projects = projectService.findProjectByCourse(course);</span>
+<span class="fc" id="L250">        GradeService gradeService = new GradeService(em);</span>
+<span class="fc" id="L251">        int found = -1;</span>
+<span class="fc bfc" id="L252" title="All 2 branches covered.">        for(int i = 0; i&lt; projects.size(); i++)</span>
+        {
+<span class="fc bfc" id="L254" title="All 2 branches covered.">        	if (projects.get(i).getProject_id() == projectId)</span>
+<span class="fc" id="L255">        		found =i;</span>
+        }
+<span class="fc" id="L257">        List&lt;Grade&gt; grades = gradeService.findGradeByProject(projects.get(found));</span>
+<span class="fc" id="L258">        List&lt;GradeInfo&gt; gradesInfo = GradeInfo.wrap(grades);</span>
+<span class="fc" id="L259">        em.close();                </span>
+<span class="fc" id="L260">        return gradesInfo;</span>
+    }
+    
+    /**
+     *
+     * @param courseId
+     * @param projectInfo
+     * @return
+     */
+    @POST
+    @Path(&quot;/{courseId:[0-9]*}/projects/create&quot;)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response createProject(@PathParam(&quot;courseId&quot;) int courseId, ProjectInfo projectInfo) 
+    {
+<span class="fc" id="L274">        EntityManager em = getEntityManager();</span>
+        Course course;
+<span class="fc" id="L276">        CourseService courseService = new CourseService(em);</span>
+<span class="fc" id="L277">        course = courseService.findCourseById(courseId);</span>
+<span class="fc" id="L278">        Project project = projectInfo.getProject(em);</span>
+<span class="fc" id="L279">        ProjectService projectService = new ProjectService(em);</span>
+<span class="fc" id="L280">        projectService.createProject(project);</span>
+<span class="fc" id="L281">        projectService.AssignProjectToCourse(project, course);</span>
+<span class="fc" id="L282">        UriBuilder ub = uriInfo.getAbsolutePathBuilder();</span>
+<span class="fc" id="L283">        URI newProjectUri = ub.path(Integer.toString(project.getProject_id())).build();</span>
+        //System.out.println(newProjectUri);
+<span class="fc" id="L285">        em.close();</span>
+<span class="fc" id="L286">        return Response.created(newProjectUri).build();</span>
+    }
+    
+    /**
+     *
+     * @param courseId
+     * @param projectId
+     * @param projectInfo
+     * @return
+     */
+    @PUT
+    @Path(&quot;/{courseId:[0-9]*}/projects/{projectId:[0-9]*}&quot;)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateProject(@PathParam(&quot;courseId&quot;) int courseId, @PathParam(&quot;projectId&quot;) int projectId, ProjectInfo projectInfo) 
+    {
+<span class="fc" id="L301">        EntityManager em = getEntityManager();</span>
+<span class="fc" id="L302">        Project project = projectInfo.getProject(em);</span>
+<span class="fc" id="L303">        ProjectService projectService = new ProjectService(em);</span>
+        //project = 
+<span class="fc" id="L305">		projectService.save(project);</span>
+<span class="fc" id="L306">        em.close();</span>
+<span class="fc" id="L307">        return Response.ok().build();</span>
+    }
+
+    /**
+     *
+     * @param courseId
+     * @param projectId
+     * @return
+     */
+    @DELETE
+    @Path(&quot;/{courseId:[0-9]*}/projects/{projectId:[0-9]*}/delete&quot;)
+    public Response deleteProject(@PathParam(&quot;courseId&quot;) int courseId , @PathParam(&quot;projectId&quot;) int projectId ) 
+    {
+<span class="fc" id="L320">    	EntityManager em = getEntityManager();</span>
+<span class="fc" id="L321">        ProjectService service = new ProjectService(em);</span>
+<span class="fc" id="L322">        Project project = service.findProjectById(projectId);</span>
+<span class="fc" id="L323">        boolean result = service.deleteProject(project);</span>
+<span class="pc bpc" id="L324" title="1 of 2 branches missed.">        if (!result) </span>
+        {
+<span class="nc" id="L326">            em.close();</span>
+<span class="nc" id="L327">            return Response.status(Status.NOT_FOUND).build();</span>
+        }
+<span class="fc" id="L329">        em.close();</span>
+<span class="fc" id="L330">        return Response.ok().build();</span>
+    }
+
+    /**
+     *
+     * @param courseId
+     * @param materialInfo
+     * @return
+     */
+    @POST
+    @Path(&quot;/{courseId:[0-9]*}/materials/create&quot;)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response createMaterial(@PathParam(&quot;courseId&quot;) int courseId, MaterialInfo materialInfo) 
+    {
+<span class="fc" id="L344">        EntityManager em = getEntityManager();</span>
+        Course course;
+<span class="fc" id="L346">        CourseService courseService = new CourseService(em);</span>
+<span class="fc" id="L347">        course = courseService.findCourseById(courseId);</span>
+<span class="fc" id="L348">        Material material = materialInfo.getMaterial(em);</span>
+<span class="fc" id="L349">        MaterialService materialService = new MaterialService(em);</span>
+<span class="fc" id="L350">        materialService.createMaterial(material);</span>
+<span class="fc" id="L351">        materialService.AssignMaterialToCourse(material, course);</span>
+<span class="fc" id="L352">        UriBuilder ub = uriInfo.getAbsolutePathBuilder();</span>
+<span class="fc" id="L353">        URI newMaterialUri = ub.path(Integer.toString(material.getMat_id())).build();</span>
+        //System.out.println(newMaterialUri);
+<span class="fc" id="L355">        em.close();</span>
+<span class="fc" id="L356">        return Response.created(newMaterialUri).build();</span>
+    }
+    
+    /**
+     *
+     * @param courseId
+     * @param materialId
+     * @return
+     */
+    @DELETE
+    @Path(&quot;/{courseId:[0-9]*}/materials/{materialId:[0-9]*}/delete&quot;)
+    public Response deleteMaterial(@PathParam(&quot;courseId&quot;) int courseId , @PathParam(&quot;materialId&quot;) int materialId ) 
+    {
+<span class="fc" id="L369">    	EntityManager em = getEntityManager();</span>
+<span class="fc" id="L370">        MaterialService service = new MaterialService(em);</span>
+<span class="fc" id="L371">        Material material = service.findMaterialById(materialId);</span>
+<span class="fc" id="L372">        boolean result = service.deleteMaterial(material);</span>
+<span class="pc bpc" id="L373" title="1 of 2 branches missed.">        if (!result) </span>
+        {
+<span class="nc" id="L375">            em.close();</span>
+<span class="nc" id="L376">            return Response.status(Status.NOT_FOUND).build();</span>
+        }
+<span class="fc" id="L378">        em.close();</span>
+<span class="fc" id="L379">        return Response.ok().build();</span>
+    }
+    
+    /**
+     *
+     * @param courseId
+     * @param materialId
+     * @param materialInfo
+     * @return
+     */
+    @PUT
+    @Path(&quot;/{courseId:[0-9]*}/materials/{materialId:[0-9]*}&quot;)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateProject(@PathParam(&quot;courseId&quot;) int courseId, @PathParam(&quot;materialId&quot;) int materialId, MaterialInfo materialInfo) 
+    {
+<span class="fc" id="L394">        EntityManager em = getEntityManager();</span>
+<span class="fc" id="L395">        Material material = materialInfo.getMaterial(em);</span>
+<span class="fc" id="L396">        MaterialService materialService = new MaterialService(em);</span>
+        //material = 
+<span class="fc" id="L398">		materialService.save(material);</span>
+<span class="fc" id="L399">        em.close();</span>
+<span class="fc" id="L400">        return Response.ok().build();</span>
+    }
+    /////////////////////////////student
+    
+    /**
+     *
+     * @param courseId
+     * @param studentId
+     * @return
+     */
+    @PUT
+    @Path(&quot;/{courseId:[0-9]*}/students/{studentId:[0-9]*}/register/&quot;)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response registerCourse(@PathParam(&quot;courseId&quot;) int courseId , @PathParam(&quot;studentId&quot;) int studentId) 
+    {
+<span class="fc" id="L415">        EntityManager em = getEntityManager();</span>
+<span class="fc" id="L416">        CourseService courseService = new CourseService(em);</span>
+<span class="fc" id="L417">        Course course = courseService.findCourseById(courseId);</span>
+<span class="fc" id="L418">        StudentService studentService = new StudentService(em);</span>
+<span class="fc" id="L419">        Student student = studentService.findStudentById(studentId);</span>
+<span class="fc" id="L420">        boolean register = studentService.RegisterCourse(student, course);</span>
+<span class="fc" id="L421">        em.close();</span>
+<span class="pc bpc" id="L422" title="1 of 2 branches missed.">        if(register)</span>
+<span class="fc" id="L423">        	return Response.ok().build();</span>
+        else
+<span class="nc" id="L425">        	return Response.status(Status.NOT_ACCEPTABLE).build();</span>
+    }
+    
+    /**
+     *
+     * @param courseId
+     * @param studentId
+     * @return
+     */
+    @PUT
+    @Path(&quot;/{courseId:[0-9]*}/students/{studentId:[0-9]*}/unregister/&quot;)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response unregisterCourse(@PathParam(&quot;courseId&quot;) int courseId , @PathParam(&quot;studentId&quot;) int studentId) 
+    {
+<span class="fc" id="L439">        EntityManager em = getEntityManager();</span>
+<span class="fc" id="L440">        CourseService courseService = new CourseService(em);</span>
+<span class="fc" id="L441">        Course course = courseService.findCourseById(courseId);</span>
+<span class="fc" id="L442">        StudentService studentService = new StudentService(em);</span>
+<span class="fc" id="L443">        Student student = studentService.findStudentById(studentId);</span>
+<span class="fc" id="L444">        boolean register = studentService.UnregisterCourse(student, course);</span>
+<span class="fc" id="L445">        em.close();</span>
+<span class="pc bpc" id="L446" title="1 of 2 branches missed.">        if(register)</span>
+<span class="fc" id="L447">        	return Response.ok().build();</span>
+        else
+<span class="nc" id="L449">        	return Response.status(Status.NOT_ACCEPTABLE).build();</span>
+    }
+
+
+   
+    /*    
+    @GET
+    @Path(&quot;searchStudent&quot;)
+    @Produces(MediaType.APPLICATION_JSON)
+    public List&lt;CourseInfo&gt; listCoursesByStudent(@QueryParam(&quot;student&quot;) int sid)
+    {
+        EntityManager em = getEntityManager();
+        CourseService service = new CourseService(em);
+        List&lt;Course&gt; courses = service.findCoursesByStudent(sid);
+        List&lt;CourseInfo&gt; courseInfo = CourseInfo.wrap(courses);
+        em.close();
+        return courseInfo;
+    }
+
+
+    
+    */
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

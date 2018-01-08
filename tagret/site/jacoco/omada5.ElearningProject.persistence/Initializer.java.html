@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Initializer.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ElearningProject</a> &gt; <a href="index.source.html" class="el_package">omada5.ElearningProject.persistence</a> &gt; <span class="el_source">Initializer.java</span></div><h1>Initializer.java</h1><pre class="source lang-java linenums">package omada5.ElearningProject.persistence;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Query;
+import java.io.File;
+
+import omada5.ElearningProject.domain.*;
+
+/**
+ * The initializing class
+ * @author thegr
+ */
+<span class="fc" id="L14">public class Initializer  </span>
+{
+    /**
+     * Remove all data from database.
+     * The functionality must be executed within the bounds of a transaction
+     */
+    public void eraseData() 
+    {
+<span class="fc" id="L22">        EntityManager em = JPAUtil.getCurrentEntityManager();</span>
+<span class="fc" id="L23">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L24">        tx.begin();</span>
+        Query query;
+        
+<span class="fc" id="L27">        query = em.createNativeQuery(&quot;delete from Student_Course&quot;);</span>
+<span class="fc" id="L28">        query.executeUpdate();</span>
+                    
+<span class="fc" id="L30">        query = em.createNativeQuery(&quot;delete from Certifications&quot;);</span>
+<span class="fc" id="L31">        query.executeUpdate();</span>
+        
+<span class="fc" id="L33">        query = em.createNativeQuery(&quot;delete from Grades&quot;);</span>
+<span class="fc" id="L34">        query.executeUpdate();</span>
+        
+<span class="fc" id="L36">        query = em.createNativeQuery(&quot;delete from Materials&quot;);</span>
+<span class="fc" id="L37">        query.executeUpdate();</span>
+        
+<span class="fc" id="L39">        query = em.createNativeQuery(&quot;delete from Projects&quot;);</span>
+<span class="fc" id="L40">        query.executeUpdate();</span>
+        
+<span class="fc" id="L42">        query = em.createNativeQuery(&quot;delete from Courses&quot;);</span>
+<span class="fc" id="L43">        query.executeUpdate();</span>
+        
+<span class="fc" id="L45">        query = em.createNativeQuery(&quot;delete from Universities&quot;);</span>
+<span class="fc" id="L46">        query.executeUpdate();</span>
+                        
+<span class="fc" id="L48">        query = em.createNativeQuery(&quot;delete from Persons&quot;);</span>
+<span class="fc" id="L49">        query.executeUpdate();</span>
+
+<span class="fc" id="L51">        query = em.createNativeQuery(&quot;ALTER SEQUENCE hibernate_sequence RESTART WITH 1&quot;);</span>
+<span class="fc" id="L52">        query.executeUpdate();</span>
+        
+<span class="fc" id="L54">        tx.commit();   </span>
+<span class="fc" id="L55">    }</span>
+    
+    /**
+     * prepares the default data
+     * to install in the 
+     * h2 database
+     */
+    public void prepareData() 
+    {
+<span class="fc" id="L64">        eraseData();                      </span>
+        
+<span class="fc" id="L66">        University aueb = new University(&quot;AUEB&quot;, &quot;info@aueb.gr&quot;);</span>
+<span class="fc" id="L67">        University uoa = new University(&quot;UOA&quot;, &quot;info@uoa.gr&quot;);</span>
+<span class="fc" id="L68">        University uom = new University(&quot;UOM&quot;, &quot;info@uom.gr&quot;);</span>
+        
+<span class="fc" id="L70">        Uni_Admin admin_aueb = new Uni_Admin(&quot;Alexandros&quot;, &quot;Stavrakas&quot;, &quot;stavrakasa@aueb.gr&quot;, &quot;1234&quot;);</span>
+<span class="fc" id="L71">        Uni_Admin admin_uoa = new Uni_Admin(&quot;Danai&quot;,&quot;Dimara&quot;,&quot;dimarad@uoa.gr&quot;,&quot;1234&quot;);</span>
+<span class="fc" id="L72">        Uni_Admin admin_uom = new Uni_Admin(&quot;Nektarios&quot;,&quot;Karatzas&quot;,&quot;karatzasn@uom.gr&quot;,&quot;1234&quot;);</span>
+        
+        //Teacher Kotidis = new Teacher(&quot;Ioannis&quot;,&quot;Kotidis&quot;,&quot;kotidis@aueb.gr&quot;,&quot;1234&quot;);
+<span class="fc" id="L75">        Teacher Kotidis = new Teacher();</span>
+<span class="fc" id="L76">        Kotidis.setName(&quot;Ioannis&quot;);</span>
+<span class="fc" id="L77">        Kotidis.setSurname(&quot;Kotidis&quot;);</span>
+<span class="fc" id="L78">        Kotidis.setEmail(&quot;kotidis@aueb.gr&quot;);</span>
+<span class="fc" id="L79">        Kotidis.setPassword(&quot;1234&quot;);</span>
+<span class="fc" id="L80">        Teacher Giakoumakis = new Teacher(&quot;Manolis&quot;,&quot;Giakoumakis&quot;,&quot;giakou@aueb.gr&quot;,&quot;1234&quot;);</span>
+        
+<span class="fc" id="L82">        Course Java = new Course();</span>
+<span class="fc" id="L83">        Course Python = new Course();</span>
+<span class="fc" id="L84">        Course Cpp = new Course();</span>
+        
+<span class="fc" id="L86">        Student Giannakis = new Student();</span>
+<span class="fc" id="L87">        Student Kostakis = new Student();</span>
+        
+<span class="fc" id="L89">        aueb.addCourses(Java);</span>
+<span class="fc" id="L90">        Java.setUniversity(aueb);</span>
+        
+<span class="fc" id="L92">        aueb.addCourses(Python);</span>
+<span class="fc" id="L93">        Python.setUniversity(aueb);</span>
+        
+<span class="fc" id="L95">        Cpp.setUniversity(uoa);</span>
+<span class="fc" id="L96">        uoa.addCourses(Cpp);</span>
+        
+<span class="fc" id="L98">        aueb.setUni_Admin(admin_aueb);</span>
+        
+<span class="fc" id="L100">        Java.setTitle(&quot;java&quot;);</span>
+<span class="fc" id="L101">        Java.setDescription(&quot;the first course for java&quot;);</span>
+<span class="fc" id="L102">        Java.setField(&quot;programming&quot;);</span>
+<span class="fc" id="L103">        Java.setUniCourseId(&quot;inf1&quot;);</span>
+<span class="fc" id="L104">        Java.setTeacher(Kotidis);</span>
+<span class="fc" id="L105">        Kotidis.addCourse(Java);</span>
+        
+<span class="fc" id="L107">        Python.setTitle(&quot;python&quot;);</span>
+<span class="fc" id="L108">        Python.setDescription(&quot;the first course for python&quot;);</span>
+<span class="fc" id="L109">        Python.setField(&quot;programming&quot;);</span>
+<span class="fc" id="L110">        Python.setUniCourseId(&quot;inf2&quot;);</span>
+<span class="fc" id="L111">        Python.setTeacher(Kotidis);</span>
+<span class="fc" id="L112">        Kotidis.addCourse(Python);</span>
+        
+<span class="fc" id="L114">        Cpp.setTitle(&quot;cpp&quot;);</span>
+<span class="fc" id="L115">        Cpp.setDescription(&quot;the first course for cpp&quot;);</span>
+<span class="fc" id="L116">        Cpp.setField(&quot;programming&quot;);</span>
+<span class="fc" id="L117">        Cpp.setUniCourseId(&quot;inf3&quot;);</span>
+<span class="fc" id="L118">        Cpp.setTeacher(Giakoumakis);</span>
+<span class="fc" id="L119">        Giakoumakis.addCourse(Cpp);</span>
+        
+<span class="fc" id="L121">        Giannakis.setName(&quot;Giannakis&quot;);</span>
+<span class="fc" id="L122">        Giannakis.setSurname(&quot;Papardelis&quot;);</span>
+<span class="fc" id="L123">        Giannakis.setEmail(&quot;giannakis@gmail.gr&quot;);</span>
+<span class="fc" id="L124">        Giannakis.setPassword(&quot;password&quot;);</span>
+                
+<span class="fc" id="L126">        Kostakis.setName(&quot;Kostakis&quot;);</span>
+<span class="fc" id="L127">        Kostakis.setSurname(&quot;Monarxidos&quot;);</span>
+<span class="fc" id="L128">        Kostakis.setEmail(&quot;kostakis@yahoo.gr&quot;);</span>
+<span class="fc" id="L129">        Kostakis.setPassword(&quot;password&quot;);</span>
+        
+<span class="fc" id="L131">        Material lecture1Java = new Material(&quot;lec1&quot;, &quot;first lecture of Java&quot;);</span>
+<span class="fc" id="L132">        Material lecture2Java = new Material(&quot;lec2&quot;, &quot;second lecture of Java&quot;);</span>
+        
+<span class="fc" id="L134">        Project project1Java1 = new Project(&quot;pr1Java&quot;, &quot;write the task here&quot;);</span>
+<span class="fc" id="L135">        Project project2Java1 = new Project(&quot;pr2Java&quot;, &quot;write the task here&quot;);</span>
+<span class="fc" id="L136">        Project project3Java1 = new Project(&quot;pr3Java&quot;, &quot;write the task here&quot;);</span>
+        
+<span class="fc" id="L138">        Java.addProject(project1Java1);</span>
+<span class="fc" id="L139">        Java.addProject(project2Java1);</span>
+<span class="fc" id="L140">        Java.addProject(project3Java1);</span>
+        
+<span class="fc" id="L142">        project1Java1.setCourse(Java);</span>
+<span class="fc" id="L143">        project2Java1.setCourse(Java);</span>
+<span class="fc" id="L144">        project3Java1.setCourse(Java);</span>
+        
+<span class="fc" id="L146">        Java.addMaterial(lecture1Java);</span>
+<span class="fc" id="L147">        Java.addMaterial(lecture2Java);</span>
+        
+<span class="fc" id="L149">        lecture1Java.setCourse(Java);</span>
+<span class="fc" id="L150">        lecture2Java.setCourse(Java);</span>
+        
+        byte[] bFile;
+<span class="fc" id="L153">        FileController f = new FileController();</span>
+<span class="fc" id="L154">        File file = new File(&quot;C:\\Users\\thegr\\Documents\\test1.txt&quot;);</span>
+<span class="fc" id="L155">        bFile = f.FileUpolader(file);</span>
+<span class="fc" id="L156">        lecture1Java.setFile(bFile);</span>
+        
+<span class="fc" id="L158">        file = new File(&quot;C:\\Users\\thegr\\Documents\\test2.txt&quot;);</span>
+<span class="fc" id="L159">        bFile = f.FileUpolader(file);</span>
+<span class="fc" id="L160">        lecture2Java.setFile(bFile); </span>
+        
+<span class="fc" id="L162">        Kostakis.addCourses(Java);</span>
+<span class="fc" id="L163">        Kostakis.addCourses(Cpp);</span>
+<span class="fc" id="L164">        Kostakis.addCourses(Python);</span>
+<span class="fc" id="L165">        Giannakis.addCourses(Java);</span>
+<span class="fc" id="L166">        Giannakis.addCourses(Cpp);</span>
+        
+        
+<span class="fc" id="L169">        file = new File(&quot;C:\\Users\\thegr\\Documents\\project.txt&quot;);</span>
+<span class="fc" id="L170">        bFile = f.FileUpolader(file);</span>
+        
+        
+<span class="fc" id="L173">        Grade grade1 = new Grade();</span>
+<span class="fc" id="L174">        grade1.setProject(project1Java1);</span>
+<span class="fc" id="L175">        grade1.setStudent(Kostakis);</span>
+<span class="fc" id="L176">        grade1.setFile(bFile);</span>
+<span class="fc" id="L177">        Kostakis.addGrade(grade1);</span>
+<span class="fc" id="L178">        grade1.setScore(6);</span>
+        
+<span class="fc" id="L180">        Grade grade2 = new Grade();</span>
+<span class="fc" id="L181">        grade2.setProject(project1Java1);</span>
+<span class="fc" id="L182">        grade2.setStudent(Giannakis);</span>
+<span class="fc" id="L183">        grade2.setFile(bFile);</span>
+<span class="fc" id="L184">        Giannakis.addGrade(grade2);</span>
+<span class="fc" id="L185">        grade2.setScore(8);</span>
+        
+<span class="fc" id="L187">        Grade grade3 = new Grade();</span>
+<span class="fc" id="L188">        grade3.setProject(project2Java1);</span>
+<span class="fc" id="L189">        grade3.setStudent(Kostakis);</span>
+<span class="fc" id="L190">        grade3.setFile(bFile);</span>
+<span class="fc" id="L191">        Kostakis.addGrade(grade3);</span>
+<span class="fc" id="L192">        grade3.setScore(10);</span>
+        
+<span class="fc" id="L194">        Grade grade4 = new Grade();</span>
+<span class="fc" id="L195">        grade4.setProject(project3Java1);</span>
+<span class="fc" id="L196">        grade4.setStudent(Kostakis);</span>
+<span class="fc" id="L197">        grade4.setFile(bFile);</span>
+<span class="fc" id="L198">        Kostakis.addGrade(grade4);</span>
+<span class="fc" id="L199">        grade4.setScore(6);</span>
+        
+<span class="fc" id="L201">        Grade grade13 = new Grade();</span>
+<span class="fc" id="L202">        grade13.setProject(project2Java1);</span>
+<span class="fc" id="L203">        grade13.setStudent(Giannakis);</span>
+<span class="fc" id="L204">        grade13.setFile(bFile);</span>
+<span class="fc" id="L205">        Giannakis.addGrade(grade13);</span>
+<span class="fc" id="L206">        grade13.setScore(10);</span>
+        
+<span class="fc" id="L208">        Grade grade14 = new Grade();</span>
+<span class="fc" id="L209">        grade14.setProject(project3Java1);</span>
+<span class="fc" id="L210">        grade14.setStudent(Giannakis);</span>
+<span class="fc" id="L211">        grade4.setFile(bFile);</span>
+<span class="fc" id="L212">        Giannakis.addGrade(grade14);</span>
+<span class="fc" id="L213">        grade14.setScore(6);</span>
+        
+<span class="fc" id="L215">        Certification cer1 = new Certification();</span>
+<span class="fc" id="L216">        cer1.setCourse(Java);</span>
+<span class="fc" id="L217">        cer1.setStudent(Kostakis);</span>
+<span class="fc" id="L218">        Kostakis.addCertification(cer1);</span>
+        
+        
+///////////////////////////////////////////////////////////////////////////////////////
+
+<span class="fc" id="L223">        EntityManager em = JPAUtil.createEntityManager();</span>
+<span class="fc" id="L224">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L225">        tx.begin();</span>
+        
+<span class="fc" id="L227">        em.persist(aueb);</span>
+<span class="fc" id="L228">        em.persist(uoa);</span>
+<span class="fc" id="L229">        em.persist(uom);</span>
+        
+<span class="fc" id="L231">        em.persist(admin_aueb);</span>
+<span class="fc" id="L232">        em.persist(admin_uoa);</span>
+<span class="fc" id="L233">        em.persist(admin_uom);</span>
+                
+<span class="fc" id="L235">        em.persist(Kotidis);</span>
+<span class="fc" id="L236">        em.persist(Giakoumakis);</span>
+
+<span class="fc" id="L238">        em.persist(Java);</span>
+<span class="fc" id="L239">        em.persist(Python);</span>
+<span class="fc" id="L240">        em.persist(Cpp);</span>
+
+<span class="fc" id="L242">        em.persist(lecture1Java);</span>
+<span class="fc" id="L243">        em.persist(lecture2Java);</span>
+        
+<span class="fc" id="L245">        em.persist(project1Java1);</span>
+<span class="fc" id="L246">        em.persist(project2Java1);</span>
+<span class="fc" id="L247">        em.persist(project3Java1);</span>
+        
+<span class="fc" id="L249">        em.persist(Kostakis);</span>
+<span class="fc" id="L250">        em.persist(Giannakis);</span>
+        
+<span class="fc" id="L252">        em.persist(grade1);</span>
+<span class="fc" id="L253">        em.persist(grade2);</span>
+<span class="fc" id="L254">        em.persist(grade3);</span>
+<span class="fc" id="L255">        em.persist(grade4);</span>
+<span class="fc" id="L256">        em.persist(grade13);</span>
+<span class="fc" id="L257">        em.persist(grade14);</span>
+        
+<span class="fc" id="L259">        em.persist(cer1);</span>
+        
+<span class="fc" id="L261">        tx.commit();</span>
+<span class="fc" id="L262">        em.close();</span>
+
+<span class="fc" id="L264">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>UniAdminService.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ElearningProject</a> &gt; <a href="index.source.html" class="el_package">omada5.ElearningProject.service</a> &gt; <span class="el_source">UniAdminService.java</span></div><h1>UniAdminService.java</h1><pre class="source lang-java linenums">package omada5.ElearningProject.service;
+
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.EntityTransaction;
+import omada5.ElearningProject.domain.*;
+import omada5.ElearningProject.persistence.JPAUtil;
+
+/**
+ * The UniAdminService class
+ * @author thegr
+ */
+public class UniAdminService 
+{
+    final private EntityManager em;
+
+    /**
+     * sets the entity manager for the service
+     * @param em
+     */
+    public UniAdminService(EntityManager em) 
+<span class="fc" id="L23">    {</span>
+<span class="fc" id="L24">        this.em = em;</span>
+<span class="fc" id="L25">    }</span>
+    
+    /**
+     * gets the current entity manager from the JPAUtil class
+     */
+    public UniAdminService() 
+<span class="nc" id="L31">    {</span>
+<span class="nc" id="L32">            em = JPAUtil.getCurrentEntityManager();</span>
+<span class="nc" id="L33">    }</span>
+
+    /**
+     * returns a List with all Administrators with a specific Surname
+     * @param surname
+     * @return results
+     */
+    public List&lt;Uni_Admin&gt; findUniAdminsByLastName(String surname) 
+    {
+<span class="fc" id="L42">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L43">        tx.begin();</span>
+<span class="fc" id="L44">        List&lt;Uni_Admin&gt; results = null;</span>
+<span class="fc" id="L45">        results = em.createQuery(&quot;select ua from Uni_Admin ua where ua.surname like :surname &quot;).setParameter(&quot;surname&quot;, surname).getResultList();</span>
+<span class="fc" id="L46">        tx.commit();</span>
+<span class="fc" id="L47">        return results;</span>
+    }
+
+    /**
+     * return an administrator from a specific id
+     * @param id
+     * @return the administrator
+     */
+    public Uni_Admin findUni_AdminById(int id) 
+    {
+<span class="fc" id="L57">        return em.find(Uni_Admin.class, id);</span>
+    }
+
+    /**
+     * updates an administrator
+     * @param id
+     * @param name
+     * @param Surname
+     * @param mail
+     * @param password
+     * @return the updated administrator
+     */
+    public Uni_Admin saveOrUpdateUni_Admin(int id,String name, String Surname, String mail, String password) 
+    {
+<span class="fc" id="L71">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L72">        tx.begin();</span>
+        List&lt;Uni_Admin&gt; uniAdmins;
+<span class="fc" id="L74">        uniAdmins = em.createQuery(&quot;select t from Uni_Admin t&quot;).getResultList();</span>
+<span class="pc bpc" id="L75" title="1 of 2 branches missed.">        for(Uni_Admin uniAdmin: uniAdmins)</span>
+        {
+<span class="pc bpc" id="L77" title="1 of 2 branches missed.">            if(uniAdmin.getPerson_id()==id)</span>
+            {
+<span class="pc bpc" id="L79" title="1 of 2 branches missed.">                if(name!=null)</span>
+<span class="fc" id="L80">                    uniAdmin.setName(name);</span>
+<span class="pc bpc" id="L81" title="1 of 2 branches missed.">                if(Surname!=null)</span>
+<span class="nc" id="L82">                    uniAdmin.setSurname(Surname);</span>
+<span class="pc bpc" id="L83" title="1 of 2 branches missed.">                if(mail!=null)</span>
+<span class="nc" id="L84">                    uniAdmin.setEmail(mail);</span>
+<span class="pc bpc" id="L85" title="1 of 2 branches missed.">                if(password!=null)</span>
+<span class="nc" id="L86">                    uniAdmin.setPassword(password);</span>
+<span class="fc" id="L87">                em.merge(uniAdmin);</span>
+<span class="fc" id="L88">                tx.commit();</span>
+<span class="fc" id="L89">                return uniAdmin;</span>
+            }
+<span class="nc" id="L91">        }</span>
+<span class="nc" id="L92">        tx.rollback();</span>
+<span class="nc" id="L93">        return null;</span>
+    }
+    
+    /**
+     * creates a new administrator
+     * @param name
+     * @param Surname
+     * @param mail
+     * @param password
+     * @return the created administrator
+     */
+    public Uni_Admin createUniAdmin(String name, String Surname, String mail, String password)
+    {	
+<span class="pc bpc" id="L106" title="7 of 8 branches missed.">        if (name == null &amp;&amp; Surname == null &amp;&amp; mail == null &amp;&amp; password == null)</span>
+        {
+<span class="nc" id="L108">            return null;</span>
+        }
+<span class="fc" id="L110">        Uni_Admin newUni_Admin = new Uni_Admin(name, Surname, mail, password);</span>
+<span class="fc" id="L111">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L112">        tx.begin();</span>
+<span class="fc" id="L113">        em.persist(newUni_Admin);</span>
+<span class="fc" id="L114">        tx.commit();</span>
+<span class="fc" id="L115">        return newUni_Admin;</span>
+    }
+    
+    /**
+     *
+     * @param email
+     * @return
+     */
+    public boolean deleteUniAdmin(String email) 
+    {
+<span class="fc" id="L125">        EntityTransaction tx = em.getTransaction();</span>
+<span class="fc" id="L126">        tx.begin();</span>
+        try 
+        {
+<span class="fc" id="L129">            Uni_Admin admin = (Uni_Admin) em.createQuery(&quot;select a from Uni_Admin a where a.email =:email&quot;).setParameter(&quot;email&quot;, email).getSingleResult();</span>
+<span class="fc" id="L130">            University uni = (University)em.createQuery(&quot;select u from University u where u.uni_Admin.email =:email&quot;).setParameter(&quot;email&quot;, email).getSingleResult();</span>
+<span class="fc" id="L131">            uni.setUni_Admin(null);</span>
+<span class="fc" id="L132">            em.merge(uni);</span>
+<span class="fc" id="L133">            em.remove(admin);</span>
+        }
+<span class="nc" id="L135">        catch (EntityNotFoundException e) </span>
+        {
+<span class="nc" id="L137">            tx.rollback();</span>
+<span class="nc" id="L138">            return false;</span>
+<span class="fc" id="L139">        }</span>
+<span class="fc" id="L140">        tx.commit();</span>
+<span class="fc" id="L141">        return true;</span>
+    }
+
+    /**
+     * returns a List with all the university administrators
+     * @return results
+     */
+    public List&lt;Uni_Admin&gt; findAllUniAdmins() 
+    {
+<span class="fc" id="L150">        List&lt;Uni_Admin&gt; results = null;</span>
+<span class="fc" id="L151">        results = em.createQuery(&quot;select ua from Uni_Admin ua&quot;).getResultList();</span>
+<span class="fc" id="L152">        return results;</span>
+    }
+    
+    /**
+     *
+     * @param id
+     * @return
+     */
+    public University findUniversityByAdmin(int id)
+    {
+<span class="fc" id="L162">    	University university = (University)em.createQuery(&quot;select u from University u where u.uni_Admin.person_id =:id&quot;).setParameter(&quot;id&quot;, id).getSingleResult();</span>
+<span class="fc" id="L163">    	return university;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

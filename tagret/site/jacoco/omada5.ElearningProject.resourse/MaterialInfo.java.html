@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>MaterialInfo.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ElearningProject</a> &gt; <a href="index.source.html" class="el_package">omada5.ElearningProject.resourse</a> &gt; <span class="el_source">MaterialInfo.java</span></div><h1>MaterialInfo.java</h1><pre class="source lang-java linenums">package omada5.ElearningProject.resourse;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import omada5.ElearningProject.domain.*;
+
+/**
+ *
+ * @author thegr
+ */
+@XmlRootElement
+public class MaterialInfo 
+{
+    private int material_id;
+
+    private String title;
+
+    private String description;
+
+    private int course_id;
+    
+    /**
+     *
+     */
+<span class="fc" id="L29">    public MaterialInfo(){}</span>
+    
+    /**
+     *
+     * @param m
+     */
+    public MaterialInfo(Material m)
+<span class="fc" id="L36">    {</span>
+<span class="fc" id="L37">        material_id = m.getMat_id();</span>
+<span class="fc" id="L38">        title = m.getTitle();</span>
+<span class="fc" id="L39">        description = m.getDescription();</span>
+<span class="fc" id="L40">        course_id = m.getCourse().getCourse_id();</span>
+<span class="fc" id="L41">    }</span>
+    
+    /**
+     *
+     * @return
+     */
+    public int getMaterial_id() 
+    {
+<span class="fc" id="L49">        return this.material_id;</span>
+    }
+
+    /**
+     *
+     * @param material_id
+     */
+    public void setMaterial_id(int material_id) 
+    {
+<span class="fc" id="L58">        this.material_id = material_id;</span>
+<span class="fc" id="L59">    }</span>
+    /**
+     * returns the project title
+     * @return title
+     */ 
+    public String getTitle() 
+    {
+<span class="fc" id="L66">        return this.title;</span>
+    }
+
+    /**
+     * sets the title of the project
+     * @param title
+     */
+    public void setTitle(String title) 
+    {
+<span class="fc" id="L75">        this.title = title;</span>
+<span class="fc" id="L76">    }</span>
+
+    /**
+     * returns the description of the project
+     * @return description
+     */
+    public String getDescription() 
+    {
+<span class="fc" id="L84">        return this.description;</span>
+    }
+
+    /**
+     * sets the description of the project
+     * @param description
+     */
+    public void setDescription(String description) 
+    {
+<span class="fc" id="L93">        this.description = description;</span>
+<span class="fc" id="L94">    }</span>
+    
+    /**
+     * returns the course the project belongs
+     * @return course
+     */
+    public int getCourseId() 
+    {
+<span class="fc" id="L102">        return this.course_id;</span>
+    }
+
+    /**
+     * sets the course the project belongs
+     * @param course_id
+     */
+    public void setCourseId(int course_id) 
+    {
+<span class="fc" id="L111">        this.course_id = course_id;</span>
+<span class="fc" id="L112">    }</span>
+    
+    /**
+     *
+     * @param m
+     * @return
+     */
+    public static MaterialInfo wrap(Material m) 
+    {
+<span class="nc" id="L121">        return new MaterialInfo(m);</span>
+    }
+
+    /**
+     *
+     * @param materials
+     * @return
+     */
+    public static List&lt;MaterialInfo&gt; wrap(List&lt;Material&gt; materials) 
+    {
+<span class="fc" id="L131">        List&lt;MaterialInfo&gt; materialInfoList = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L132" title="All 2 branches covered.">        for (Material m : materials) </span>
+        {
+<span class="fc" id="L134">                materialInfoList.add(new MaterialInfo(m));</span>
+<span class="fc" id="L135">        }</span>
+<span class="fc" id="L136">        return materialInfoList;</span>
+    }
+    
+    /**
+     *
+     * @param em
+     * @return
+     */
+    public Material getMaterial(EntityManager em) 
+    {
+        Material material;
+
+<span class="fc bfc" id="L148" title="All 2 branches covered.">        if (material_id &gt; 0) </span>
+        {
+<span class="fc" id="L150">            material = em.find(Material.class, material_id);</span>
+        } 
+        else 
+        {
+<span class="fc" id="L154">            material = new Material();</span>
+<span class="fc" id="L155">            material.setTitle(title);</span>
+<span class="fc" id="L156">            material.setDescription(description);</span>
+<span class="pc bpc" id="L157" title="1 of 2 branches missed.">            if(course_id &gt; 0)</span>
+            {
+<span class="nc" id="L159">            	Course course = em.getReference(Course.class, course_id);</span>
+<span class="nc" id="L160">                material.setCourse(course);</span>
+            }
+            
+        }
+<span class="fc" id="L164">        return material;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>
